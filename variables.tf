@@ -77,6 +77,7 @@ variable "service_attachments" {
       project_id       = string
       connection_limit = optional(number)
     })))
+    domain_names          = optional(list(string))
     consumer_reject_lists = optional(list(string))
     reconcile_connections = optional(bool)
   }))
