@@ -18,3 +18,12 @@ output "dns_policies" {
     }
   }
 }
+output "service_attachments" {
+  description = "PSC Published Service Attachments"
+  value = {
+    for k, v in local.service_attachments : v.key => {
+      name      = try(google_compute_service_attachment.default[v.key].name, null)
+      self_link = try(google_compute_service_attachment.default[v.key].self_link, null)
+    }
+  }
+}
