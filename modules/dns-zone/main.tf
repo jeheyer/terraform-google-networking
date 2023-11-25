@@ -1,4 +1,5 @@
 locals {
+  url_prefix = "https://www.googleapis.com/compute/v1/projects"
   dns_zones = [for v in [var.dns_zone] :
     merge(v, {
       project_id          = coalesce(v.project_id, var.project_id)
