@@ -31,4 +31,3 @@ resource "google_compute_network_peering" "default" {
   export_subnet_routes_with_public_ip = each.value.export_subnet_routes_with_public_ip
   depends_on                          = [google_compute_network.default]
 }
-

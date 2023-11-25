@@ -1,5 +1,5 @@
 locals {
-  ip_ranges_0 = [for n in local.vpc_networks :
+  ip_ranges_0 = flatten([for n in local.vpc_networks :
     [for i, v in coalesce(n.ip_ranges, []) :
       {
         create        = coalesce(v.create, true)
@@ -14,12 +14,12 @@ locals {
         network       = try(google_compute_network.default[n.key].name, null)
       }
     ]
-  ]
-  ip_ranges = flatten([for v in local.ip_ranges_0 :
+  ])
+  ip_ranges = [for v in local.ip_ranges_0 :
     merge(v, {
       key = "${v.project_id}:${v.network_name}:${v.name}"
     }) if v.create
-  ])
+  ]
 }
 
 resource "google_compute_global_address" "default" {

@@ -1,5 +1,5 @@
 locals {
-  routes_0 = [for n in local.vpc_networks :
+  routes_0 = flatten([for n in local.vpc_networks :
     [for i, v in coalesce(n.routes, []) :
       merge(v, {
         create        = coalesce(v.create, true)
@@ -11,7 +11,7 @@ locals {
         dest_ranges   = coalesce(v.dest_ranges, [])
       })
     ]
-  ]
+  ])
   routes = flatten(concat(
     [for r in local.routes_0 :
       # Routes that have more than one destination range
