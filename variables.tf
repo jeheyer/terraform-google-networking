@@ -199,3 +199,25 @@ variable "service_attachments" {
   }))
   default = []
 }
+variable "defaults" {
+  type = object({
+    cloud_router_bgp_asn                   = optional(number)
+    cloud_router_bgp_keepalive_interval    = optional(number)
+    subnet_stack_type                      = optional(string)
+    subnet_private_access                  = optional(bool)
+    subnet_flow_logs                       = optional(bool)
+    subnet_log_aggregation_interval        = optional(string)
+    subnet_log_sampling_rate               = optional(string)
+    cloud_nat_enable_dpa                   = optional(bool)
+    cloud_nat_enable_eim                   = optional(bool)
+    cloud_nat_udp_idle_timeout             = optional(number)
+    cloud_nat_tcp_established_idle_timeout = optional(number)
+    cloud_nat_tcp_time_wait_timeout        = optional(number)
+    cloud_nat_tcp_transitory_idle_timeout  = optional(number)
+    cloud_nat_icmp_idle_timeout            = optional(number)
+    cloud_nat_min_ports_per_vm             = optional(number)
+    cloud_nat_max_ports_per_vm             = optional(number)
+    cloud_nat_log_type                     = optional(string)
+  })
+  default = {}
+}

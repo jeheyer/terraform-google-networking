@@ -20,6 +20,7 @@ output "dns_zones" {
     } if v.create
   }
 }
+/*
 output "dns_policies" {
   description = "DNS Policies"
   value = {
@@ -28,6 +29,7 @@ output "dns_policies" {
     }
   }
 }
+*/
 output "service_attachments" {
   description = "PSC Published Service Attachments"
   value = {
