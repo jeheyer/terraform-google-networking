@@ -44,7 +44,7 @@ resource "google_dns_managed_zone" "default" {
     }
   }
   dynamic "forwarding_config" {
-    for_each = local.dns_zone.visibility == "private" && length(local.dns_zone.visible_networks) > 0 ? [true] : []
+    for_each = local.dns_zone.visibility == "private" && length(local.dns_zone.target_name_servers) > 0 ? [true] : []
     content {
       dynamic "target_name_servers" {
         for_each = local.dns_zone.target_name_servers
