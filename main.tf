@@ -8,7 +8,7 @@ locals {
   ]
 }
 module "vpc-networks" {
-  source                  = "git::https://github.com/jeheyer/terraform-google-networking//vpc-network"
+  source                  = "git::https://github.com/jeheyer/terraform-google-networking//modules/vpc-network"
   for_each                = { for i, v in local.vpc_networks : v.key => v if v.create }
   project_id              = var.project_id
   network_name            = each.value.name
@@ -43,7 +43,7 @@ locals {
 }
 module "dns-zone" {
 #  source     = "./modules/dns-zone"
-  source                  = "git::https://github.com/jeheyer/terraform-google-networking//dns-zone"
+  source                  = "git::https://github.com/jeheyer/terraform-google-networking//modules/dns-zone"
   for_each   = { for i, v in local.dns_zones : v.key => v if v.create }
   project_id = var.project_id
   dns_zone   = each.value
