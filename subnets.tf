@@ -12,7 +12,7 @@ locals {
         aggregation_interval = coalesce(v.log_aggregation_interval, var.defaults.subnet_log_aggregation_interval)
         flow_sampling        = coalesce(v.log_sampling_rate, var.defaults.subnet_log_sampling_rate)
         log_metadata         = "INCLUDE_ALL_METADATA"
-        flow_logs            = coalesce(v.flow_logs, var.defaults.subnet_flow_logs)
+        flow_logs            = coalesce(v.flow_logs, var.defaults.subnet_flow_logs, false)
         stack_type           = upper(coalesce(v.stack_type, var.defaults.subnet_stack_type))
         attached_projects    = concat(coalesce(v.attached_projects, []), coalesce(n.attached_projects, []))
         shared_accounts      = concat(coalesce(v.shared_accounts, []), coalesce(n.shared_accounts, []))

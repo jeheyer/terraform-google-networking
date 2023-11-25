@@ -11,13 +11,13 @@ locals {
       })
     ]
   ]
-  peerings = [for i, v in local.peerings_0 :
+  peerings = flatten([for i, v in local.peerings_0 :
     merge(v, {
       key = "${v.project_id}:${v.network}:${v.name}"
       # If peer network link not provided, we can generate it using their project ID and network name
       peer_network = coalesce(v.peer_network_link, "projects/${v.peer_project_id}/global/networks/${v.peer_network_name}")
     }) if v.create
-  ]
+  ])
 }
 
 resource "google_compute_network_peering" "default" {
