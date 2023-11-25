@@ -11,7 +11,7 @@ locals {
         prefix_length = element(split("/", v.ip_range), 1)
         address_type  = "INTERNAL"
         purpose       = "VPC_PEERING"
-        network       =  try(google_compute_network.default[n.key].name, null)
+        network       = n.name #google_compute_network.default[n.key].name
       }
     ]
   ])

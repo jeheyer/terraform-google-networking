@@ -7,7 +7,7 @@ locals {
         name              = coalesce(v.name, "peering-${i}")
         peer_project_id   = coalesce(v.peer_project_id, v.project_id, n.project_id, var.project_id)
         peer_network_name = coalesce(v.peer_network_name, "default")
-        network           = try(google_compute_network.default[n.key].name, null)
+        network           = n.name #google_compute_network.default[n.key].name
       })
     ]
   ])
