@@ -24,7 +24,7 @@ locals {
     {
       is_private = v.visibility == "private" ? true : false
       is_public  = v.visibility == "public" ? true : false
-      key        = "${v.project_id}::${v.name}"
+      key        = "${v.project_id}:${v.name}"
     }
   )]
 }
