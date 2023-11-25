@@ -1,4 +1,8 @@
+locals {
+  url_prefix = "https://www.googleapis.com/compute/v1/projects"
+}
 
+/*
 # VPC Networks
 locals {
   vpc_networks = [for i, v in var.vpc_networks :
@@ -48,3 +52,4 @@ module "dns-zone" {
   project_id = var.project_id
   dns_zone   = each.value
 }
+*/
