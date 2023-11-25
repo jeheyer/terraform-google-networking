@@ -1,13 +1,23 @@
+
+output "vpc-networks" {
+  description = "VPC Networks"
+  value = {
+    for i, v in local.vpc_networks : v.key => {
+      name = try(module.vpc-networks[v.key].name, null)
+    } if v.create
+  }
+}
+
 output "dns_zones" {
   description = "DNS Zones"
   value = {
     for i, v in local.dns_zones : v.key => {
-      name         = try(google_dns_managed_zone.default[v.key].name, null)
-      description  = try(google_dns_managed_zone.default[v.key].description, null)
-      dns_name     = try(google_dns_managed_zone.default[v.key].dns_name, null)
-      name_servers = try(google_dns_managed_zone.default[v.key].name_servers, null)
-      visibility   = v.visibility
-    }
+      name         = try(module.dns-zone[v.key].name, null)
+      description  = try(module.dns-zone[v.key].description, null)
+      dns_name     = try(module.dns-zone[v.key].dns_name, null)
+      name_servers = try(module.dns-zone[v.key].name_servers, null)
+      visibility   = module.dns-zone[v.key].visibility
+    } if v.create
   }
 }
 output "dns_policies" {
