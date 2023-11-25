@@ -75,4 +75,5 @@ resource "google_dns_managed_zone" "default" {
       enable_logging = true
     }
   }
+  depends_on = [google_compute_network.default]
 }

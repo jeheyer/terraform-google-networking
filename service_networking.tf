@@ -16,7 +16,7 @@ locals {
   ])
   service_connections = [for i, v in local.service_connections_0 :
     merge(v, {
-      key            = "${v.project_id}:${v.network_name}:${v.service}"
+      key            = "${v.project_id}:${v.network}:${v.service}"
       peering_routes = v.import_custom_routes || v.export_custom_routes ? true : false
     }) if v.create
   ]

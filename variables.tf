@@ -125,6 +125,21 @@ variable "vpc_networks" {
       tcp_transitory_idle_timeout  = optional(number)
       icmp_idle_timeout            = optional(number)
     })))
+    vpc_access_connectors = optional(list(object({
+      create             = optional(bool, true)
+      project_id         = optional(string)
+      name               = optional(string)
+      region             = optional(string)
+      cidr_range         = optional(string)
+      subnet_name        = optional(string)
+      vpc_network_name   = optional(string)
+      network_project_id = optional(string)
+      min_throughput     = optional(number)
+      max_throughput     = optional(number)
+      min_instances      = optional(number)
+      max_instances      = optional(number)
+      machine_type       = optional(string)
+    })))
   }))
   default = []
 }
