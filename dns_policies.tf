@@ -44,4 +44,5 @@ resource "google_dns_policy" "default" {
       network_url = "projects/${each.value.project_id}/global/networks/${networks.value}"
     }
   }
+  depends_on     = [google_compute_network.default]
 }

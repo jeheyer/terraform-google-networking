@@ -1,5 +1,5 @@
 locals {
-  subnets_0 = [for n in local.vpc_networks :
+  subnets_0 = flatten([for n in local.vpc_networks :
     [for i, v in coalesce(n.subnets, []) :
       merge(v, {
         create               = coalesce(v.create, true)
@@ -24,7 +24,7 @@ locals {
         ]
       })
     ]
-  ]
+  ])
   subnets = [for i, v in local.subnets_0 :
     merge(v, {
       key                  = "${v.project_id}:${v.region}:${v.name}"

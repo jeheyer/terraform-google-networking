@@ -1,7 +1,8 @@
 locals {
-  dns_records_0 = [
+  dns_records_0 = flatten([
     for i, v in local.dns_zones : [
       for r in v.records : {
+        create       = coalesce(v.create, true)
         project_id   = v.project_id
         managed_zone = v.name
         name         = r.name == "" ? v.dns_name : "${r.name}.${v.dns_name}"
@@ -11,12 +12,12 @@ locals {
         zone_key     = v.key
       }
     ]
-  ]
-  dns_records = flatten([for i, v in local.dns_records_0 :
+  ])
+  dns_records = [for i, v in local.dns_records_0 :
     merge(v, {
       key = "${v.zone_key}:${v.name}:${v.type}"
-    })
-  ])
+    }) if v.create
+  ]
 }
 
 # DNS Records

@@ -1,5 +1,5 @@
 locals {
-  cloud_routers_0 = [for n in local.vpc_networks :
+  cloud_routers_0 = flatten([for n in local.vpc_networks :
     [for i, v in coalesce(n.cloud_routers, []) :
       {
         create                 = coalesce(v.create, true)
@@ -15,11 +15,11 @@ locals {
         advertised_ip_ranges   = coalesce(v.advertised_ip_ranges, [])
       }
     ]
-  ]
+  ])
   cloud_routers = [for i, v in local.cloud_routers_0 :
     merge(v, {
       key = "${v.project_id}:${v.region}:${v.name}"
-    })
+    }) if v.create
   ]
 }
 

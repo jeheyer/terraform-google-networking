@@ -1,5 +1,5 @@
 locals {
-  vpc_access_connectors_0 = [for n in local.vpc_networks :
+  vpc_access_connectors_0 = flatten([for n in local.vpc_networks :
     [for i, v in coalesce(n.vpc_access_connectors, []) :
       merge(v, {
         create         = coalesce(v.create, true)
@@ -14,7 +14,7 @@ locals {
         machine_type   = coalesce(v.machine_type, "e2-micro")
       })
     ]
-  ]
+  ])
   vpc_access_connectors = [for i, v in local.vpc_access_connectors_0 :
     merge(v, {
       key = "${v.project_id}:${v.region}:${v.name}"

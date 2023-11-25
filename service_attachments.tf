@@ -1,7 +1,7 @@
 locals {
   service_attachments_0 = [for i, v in var.service_attachments :
     merge(v, {
-              create               = coalesce(v.create, true)
+      create                   = coalesce(v.create, true)
       project_id               = coalesce(v.project_id, var.project_id)
       description              = coalesce(v.description, "Managed by Terraform")
       region                   = try(coalesce(v.region, var.region), null)

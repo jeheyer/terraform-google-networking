@@ -1,5 +1,5 @@
 locals {
-  service_connections_0 = [for n in local.vpc_networks :
+  service_connections_0 = flatten([for n in local.vpc_networks :
     [for i, v in coalesce(n.service_connections, []) :
       merge(v, {
         create               = coalesce(v.create, true)
@@ -13,7 +13,7 @@ locals {
         ip_ranges            = v.ip_ranges
       })
     ]
-  ]
+  ])
   service_connections = [for i, v in local.service_connections_0 :
     merge(v, {
       key            = "${v.project_id}:${v.network_name}:${v.service}"
