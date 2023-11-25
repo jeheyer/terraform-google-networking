@@ -1,6 +1,7 @@
 locals {
   service_attachments_0 = [for i, v in var.service_attachments :
     merge(v, {
+              create               = coalesce(v.create, true)
       project_id               = coalesce(v.project_id, var.project_id)
       description              = coalesce(v.description, "Managed by Terraform")
       region                   = try(coalesce(v.region, var.region), null)
@@ -9,7 +10,7 @@ locals {
       auto_accept_all_projects = coalesce(v.auto_accept_all_projects, false)
       consumer_reject_lists    = coalesce(v.consumer_reject_lists, [])
       domain_names             = coalesce(v.domain_names, [])
-    }) if lookup(v, "create", true)
+    })
   ]
   service_attachments_1 = [for i, v in local.service_attachments_0 :
     merge(v, {
@@ -23,7 +24,7 @@ locals {
         }
       ]
       connection_preference = coalesce(v.auto_accept_all_projects, false) ? "ACCEPT_AUTOMATIC" : "ACCEPT_MANUAL"
-    })
+    }) if v.create
   ]
   service_attachments_2 = [for i, v in local.service_attachments_1 :
     merge(v, {
@@ -47,7 +48,7 @@ locals {
   service_attachments = [for i, v in local.service_attachments_4 :
     merge(v, {
       target_service = v.is_regional ? coalesce(v.target_service_id, v.fwd_rule_id) : null
-      key            = v.is_regional ? "${v.project_id}::${v.region}::${v.name}" : null
+      key            = v.is_regional ? "${v.project_id}:${v.region}:${v.name}" : null
     })
   ]
 }

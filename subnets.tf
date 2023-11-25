@@ -8,12 +8,12 @@ locals {
         network              = google_compute_network.default[n.key].name
         purpose              = upper(coalesce(v.purpose, "PRIVATE"))
         region               = coalesce(v.region, var.region)
-        private_access       = coalesce(v.private_access, var.defaults.subnet_private_access)
-        aggregation_interval = coalesce(v.log_aggregation_interval, var.defaults.subnet_log_aggregation_interval)
-        flow_sampling        = coalesce(v.log_sampling_rate, var.defaults.subnet_log_sampling_rate)
+        private_access       = coalesce(v.private_access, var.defaults.subnet_private_access, false)
+        aggregation_interval = upper(coalesce(v.log_aggregation_interval, var.defaults.subnet_log_aggregation_interval, "INTERVAL_5_SEC"))
+        flow_sampling        = coalesce(v.log_sampling_rate, var.defaults.subnet_log_sampling_rate, 0.5)
         log_metadata         = "INCLUDE_ALL_METADATA"
         flow_logs            = coalesce(v.flow_logs, var.defaults.subnet_flow_logs, false)
-        stack_type           = upper(coalesce(v.stack_type, var.defaults.subnet_stack_type))
+        stack_type           = upper(coalesce(v.stack_type, var.defaults.subnet_stack_type, "IPV4_ONLY"))
         attached_projects    = concat(coalesce(v.attached_projects, []), coalesce(n.attached_projects, []))
         shared_accounts      = concat(coalesce(v.shared_accounts, []), coalesce(n.shared_accounts, []))
         secondary_ranges = [for i, r in coalesce(v.secondary_ranges, []) :

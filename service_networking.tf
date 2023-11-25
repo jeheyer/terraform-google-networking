@@ -32,7 +32,7 @@ resource "google_service_networking_connection" "default" {
 
 # Separate Step to handle route import/export on peering connections
 resource "google_compute_network_peering_routes_config" "default" {
-  for_each             = { for i, v in local.service_connections : v.key => v && v.peering_routes }
+  for_each             = { for i, v in local.service_connections : v.key => v if v.peering_routes }
   peering              = google_service_networking_connection.default[each.key].peering
   network              = each.value.network
   import_custom_routes = each.value.import_custom_routes
