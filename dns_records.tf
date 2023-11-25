@@ -1,5 +1,5 @@
 locals {
-  dns_records_0 = flatten([
+  dns_records_0 = [
     for i, v in local.dns_zones : [
       for r in v.records : {
         project_id   = v.project_id
@@ -11,12 +11,12 @@ locals {
         zone_key     = v.key
       }
     ]
-  ])
-  dns_records = [for i, v in local.dns_records_0 :
+  ]
+  dns_records = flatten([for i, v in local.dns_records_0 :
     merge(v, {
       key = "${v.zone_key}:${v.name}:${v.type}"
     })
-  ]
+  ])
 }
 
 # DNS Records
