@@ -80,13 +80,14 @@ locals {
         type         = upper(coalesce(r.type, "A"))
         ttl          = coalesce(r.ttl, 300)
         rrdatas      = coalesce(r.rrdatas, [])
-        zone_key     = v.key
+        zone 
+        #zone_key     = v.key
       }
     ] if lookup(v, "create", true)
   ])
   dns_records = [for i, v in local.dns_records_0 :
     merge(v, {
-      key = "${v.zone_key}:${v.name}:${v.type}"
+      key = "${v.project_id}:${v.managed_zone}:${v.name}:${v.type}"
     })
   ]
 }
