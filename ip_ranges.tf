@@ -1,5 +1,5 @@
 locals {
-  ip_ranges_0 = flatten([for n in local.vpc_networks :
+  _ = flatten([for n in local.vpc_networks :
     [for i, v in coalesce(n.ip_ranges, []) :
       {
         create        = coalesce(v.create, true)
@@ -11,13 +11,13 @@ locals {
         prefix_length = element(split("/", v.ip_range), 1)
         address_type  = "INTERNAL"
         purpose       = "VPC_PEERING"
-        network       = try(google_compute_network.default[n.key].name, null)
+        network       =  try(google_compute_network.default[n.key].name, null)
       }
     ]
   ])
-  ip_ranges = [for v in local.ip_ranges_0 :
+  ip_ranges = [for v in local._ :
     merge(v, {
-      key = "${v.project_id}:${v.network_name}:${v.name}"
+      key = "${v.project_id}:${v.network}:${v.name}"
     }) if v.create
   ]
 }
