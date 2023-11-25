@@ -33,7 +33,7 @@ resource "google_dns_managed_zone" "default" {
   visibility    = local.dns_zone.visibility
   force_destroy = local.dns_zone.force_destroy
   dynamic "private_visibility_config" {
-    for_each = local.dns_zone.visibility == "private" ? [true] : []
+    for_each = local.dns_zone.visibility == "private" && length(local.dns_zone.visible_networks) > 0 ? [true] : []
     content {
       dynamic "networks" {
         for_each = local.dns_zone.visible_networks
@@ -44,7 +44,7 @@ resource "google_dns_managed_zone" "default" {
     }
   }
   dynamic "forwarding_config" {
-    for_each = local.dns_zone.visibility == "private" ? [true] : []
+    for_each = local.dns_zone.visibility == "private" && length(local.dns_zone.visible_networks) > 0 ? [true] : []
     content {
       dynamic "target_name_servers" {
         for_each = local.dns_zone.target_name_servers
