@@ -80,8 +80,6 @@ locals {
         type         = upper(coalesce(r.type, "A"))
         ttl          = coalesce(r.ttl, 300)
         rrdatas      = coalesce(r.rrdatas, [])
-        zone 
-        #zone_key     = v.key
       }
     ] if lookup(v, "create", true)
   ])
