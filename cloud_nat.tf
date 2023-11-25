@@ -7,7 +7,7 @@ locals {
         create                 = coalesce(v.create, true)
         project_id             = coalesce(v.project_id, n.project_id, var.project_id)
         name                   = coalesce(v.name, "cloud-nat-${i}")
-        network                = try(google_compute_network.default[n.key].name, null)
+        network                = n.name #google_compute_network.default[n.key].name
         region                 = coalesce(v.region, var.region)
         router                 = coalesce(v.cloud_router_name, try(local.cloud_router_names[v.cloud_router], null), v.name)
         num_static_ips         = coalesce(v.num_static_ips, 0)

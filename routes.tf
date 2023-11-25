@@ -6,7 +6,7 @@ locals {
         project_id    = coalesce(v.project_id, n.project_id, var.project_id)
         name          = replace(coalesce(v.name, "route-${i}"), "_", "-")
         next_hop_type = can(regex("^[1-2]", v.next_hop)) ? "ip" : "instance"
-        network       = try(google_compute_network.default[n.key].name, null)
+        network       = n.name #google_compute_network.default[n.key].name
         dest_range    = v.dest_range
         dest_ranges   = coalesce(v.dest_ranges, [])
       })

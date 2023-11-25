@@ -7,7 +7,7 @@ locals {
         name                   = coalesce(v.name, "rtr-${i}")
         description            = coalesce(v.description, "Managed by Terraform")
         region                 = coalesce(v.region, var.region)
-        network                = try(google_compute_network.default[n.key].name, null)
+        network                = n.name #google_compute_network.default[n.key].name
         bgp_asn                = coalesce(v.bgp_asn, 64512)
         bgp_keepalive_interval = coalesce(v.bgp_keepalive_interval, 20)
         advertise_mode         = length(coalesce(v.advertised_ip_ranges, [])) > 0 ? "CUSTOM" : "DEFAULT"

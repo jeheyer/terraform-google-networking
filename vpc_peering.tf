@@ -14,7 +14,7 @@ locals {
   peerings = [for i, v in local.peerings_0 :
     merge(v, {
       # If peer network link not provided, we can generate it using their project ID and network name
-      network      = coalesce(v.network, "projects/${v.project_id}/global/networks/${v.network_name}")
+      network      = "projects/${v.project_id}/global/networks/${v.network_name}"
       peer_network = coalesce(v.peer_network_link, "projects/${v.peer_project_id}/global/networks/${v.peer_network_name}")
       key          = "${v.project_id}:${v.network_name}:${v.name}"
     }) if v.create

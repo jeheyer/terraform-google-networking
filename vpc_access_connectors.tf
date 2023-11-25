@@ -6,7 +6,7 @@ locals {
         project_id     = coalesce(v.project_id, n.project_id, var.project_id)
         name           = coalesce(v.name, "connector-${i}")
         region         = coalesce(v.region, var.region)
-        network        = v.subnet_name == null ? try(google_compute_network.default[n.key].name, null) : null
+        network        = v.subnet_name == null ? n.name : null
         min_throughput = coalesce(v.min_throughput, 200)
         max_throughput = coalesce(v.max_throughput, 1000)
         min_instances  = coalesce(v.min_instances, 2)
