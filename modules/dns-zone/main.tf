@@ -23,7 +23,7 @@ locals {
 
 # DNS Zones
 resource "google_dns_managed_zone" "default" {
-  #  for_each      = { for i, v inlocal.dns_zone : 0 => v }
+  #  for_each      = { for i, v in local.dns_zone : 0 => v }
   count         = local.dns_zone.create ? 1 : 0
   project       = local.dns_zone.project_id
   name          = local.dns_zone.name
@@ -68,4 +68,37 @@ resource "google_dns_managed_zone" "default" {
       enable_logging = true
     }
   }
+}
+
+locals {
+  dns_records_0 = flatten([for i, v in local.dns_zones :
+    [for r in v.records :
+      {
+        project_id   = v.project_id
+        managed_zone = v.name
+        name         = r.name == "" ? v.dns_name : "${r.name}.${v.dns_name}"
+        type         = upper(coalesce(r.type, "A"))
+        ttl          = coalesce(r.ttl, 300)
+        rrdatas      = coalesce(r.rrdatas, [])
+        zone_key     = v.key
+      }
+    ] if lookup(v, "create", true)
+  ])
+  dns_records = [for i, v in local.dns_records_0 :
+    merge(v, {
+      key = "${v.zone_key}:${v.name}:${v.type}"
+    })
+  ]
+}
+
+# DNS Records
+resource "google_dns_record_set" "default" {
+  for_each     = { for i, v in local.dns_records : v.key => v }
+  project      = each.value.project_id
+  managed_zone = each.value.managed_zone
+  name         = each.value.name
+  type         = each.value.type
+  ttl          = each.value.ttl
+  rrdatas      = each.value.rrdatas
+  depends_on   = [google_dns_managed_zone.default]
 }
