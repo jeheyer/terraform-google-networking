@@ -9,6 +9,7 @@ locals {
         type         = upper(coalesce(r.type, "A"))
         ttl          = coalesce(r.ttl, 300)
         rrdatas      = coalesce(r.rrdatas, [])
+        key          = r.key
         zone_key     = v.key
       }
     ]
