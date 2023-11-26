@@ -31,8 +31,8 @@
 
 ## Outputs
 
-| Name | Description | Type |
-|------|-------------|------|
+| Name      | Description                  | Type     |
+|-----------|------------------------------|----------|
 | self_link | URL of the Published Service | `string` |
 
 ### Usage Examples
@@ -40,17 +40,18 @@
 #### Target Service ID Explicitly given
 
 ```
-project_id         = "my-project-id"
-target_service_id  = "projects/my-project-id/regions/us-central1/forwardingRules/my-serivce"
-nat_subnet_names  = ["mynetwork-psc-subnet1"]
-```
-
-#### Region and Forwarding Rule name provided
-
-```
 project_id            = "my-project-id"
-region                = "us-central1"
-forwarding_rule_name  = "my-forwarding-rule"
-nat_subnet_names      = ["mynetwork-psc-subnet1"]
+service_attachments = [
+  {
+    target_service_id  = "projects/my-project-id/regions/us-central1/forwardingRules/my-serivce"
+    nat_subnet_names   = ["mynetwork-psc-subnet1"]
+  },
+  {
+    project_id            = "my-other-project-id"
+    region                = "us-central1"
+    forwarding_rule_name  = "my-forwarding-rule"
+    nat_subnet_names      = ["mynetwork-psc-subnet1"]
+  },
+]
 ```
 

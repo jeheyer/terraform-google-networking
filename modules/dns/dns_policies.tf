@@ -13,7 +13,7 @@ locals {
   )]
   dns_policies = [for i, v in local.dns_policies_0 : merge(v,
     {
-      key = "${v.project_id}:${v.name}"
+      key = coalesce(v.key, "${v.project_id}:${v.name}")
     }
   )]
 }

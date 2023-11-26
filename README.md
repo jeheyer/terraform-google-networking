@@ -1,3 +1,7 @@
+# Variables
+
+Refer to each Module's readme for full details
+
 # Modules
 
 Refer to each Module's readme for full details

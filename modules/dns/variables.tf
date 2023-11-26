@@ -8,6 +8,7 @@ variable "dns_zones" {
   type = list(object({
     create            = optional(bool, true)
     project_id        = optional(string)
+    key               = optional(string)
     dns_name          = string
     name              = optional(string)
     description       = optional(string)
@@ -36,6 +37,7 @@ variable "dns_policies" {
   type = list(object({
     create                    = optional(bool, true)
     project_id                = optional(string)
+    key                       = optional(string)
     name                      = optional(string)
     description               = optional(string)
     logging                   = optional(bool)

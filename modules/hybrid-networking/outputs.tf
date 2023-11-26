@@ -13,9 +13,9 @@ v.key => {
 output "cloud_vpn_gateways" {
   value = { for i, v in local.cloud_vpn_gateways :
     v.key => {
-      name   = v.name
-      region = v.region
-      #ip_addresses = try(google_compute_ha_vpn_gateway.default[v.key].vpn_interfaces.*.ip_address, [])
+      name         = v.name
+      region       = v.region
+      ip_addresses = try(google_compute_ha_vpn_gateway.default[v.key].vpn_interfaces.*.ip_address, [])
   } if v.create }
 }
 

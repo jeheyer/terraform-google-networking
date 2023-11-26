@@ -15,7 +15,7 @@ locals {
   ])
   dns_records = [for i, v in local.dns_records_0 :
     merge(v, {
-      key = "${v.zone_key}:${v.name}:${v.type}"
+      key = coalesce(v.key, "${v.zone_key}:${v.name}:${v.type}")
     }) if v.create
   ]
 }

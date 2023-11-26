@@ -76,21 +76,34 @@ DNS Zones are defined as a map of objects in the `dns_zones` variable.  Attribut
 
 ### Usage Examples
 
-#### Public DNS Zone
+#### Public DNS Zones
 
 ```
-dns_zones = {
-  public1 = {
-    dns_name = "mydomain.com"
-  }
-}
+dns_zones = [
+  {
+    dns_name   = "slippy.com"
+    visibility = "public"
+  },
+  {
+    name       = "slappy"
+    dns_name   = "slappy.com."
+    visibility = "public"
+  },
+  {
+    dns_name   = "swanson.com."
+    visibility = "public"
+    records = [
+      { name = "mary", type = "A", ttl = 60, rrdatas = ["203.0.113.123"] },
+    ]
+  },
+]
 ```
 
 #### DNS Zone for Private Google Access
 
 ```
-dns_zones = {
-  google-apis = {
+dns_zones = [
+  {
     dns_name         = "googleapis.com."
     visible_networks = ["network1", "network2"]
     records = [
@@ -107,15 +120,21 @@ dns_zones = {
         rrdatas = ["private.googleapis.com."]
       }
     ]
-  }
-}
+  },
+]
 ```
 
 #### DNS Policy
 
 ```
-dns_policies = {
-}
+dns_policies = [
+ {
+    name        = "log-my-dns"
+    description = "Basic policy to allow for logging on/off"
+    networks    = ["network1"]
+    logging     = true
+  },
+]
 ```
 
 #### Import examples
@@ -123,5 +142,5 @@ dns_policies = {
 Import existing DNS zone
 
 ```
-terraform import 'google_dns_managed_zone.default[\"my-zone\"]' my-project/my-zone
+terraform import 'module.dns.google_dns_managed_zone.default[\"my-project:my-zone\"]' my-project/my-zone
 ```
