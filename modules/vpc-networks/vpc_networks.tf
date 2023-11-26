@@ -3,7 +3,7 @@ locals {
     merge(v, {
       project_id              = coalesce(v.project_id, var.project_id)
       name                    = coalesce(v.name, "vpc-network-${i}")
-      mtu                     = coalesce(v.mtu, 1460)
+      mtu                     = coalesce(v.mtu, 0)
       routing_mode            = v.enable_global_routing == true ? "GLOBAL" : "REGIONAL"
       auto_create_subnetworks = coalesce(v.auto_create_subnetworks, false)
     }) if v.create

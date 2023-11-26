@@ -8,33 +8,28 @@ variable "region" {
   description = "Default GCP Region Name (can be overridden at resource level)"
   default     = null
 }
-variable "network_project_id" {
-  type        = string
-  description = "Default Shared VPC Host Project (can be overridden at resource level)"
-  default     = null
-}
 variable "vpc_networks" {
   type = list(object({
     create                  = optional(bool, true)
     project_id              = optional(string)
     name                    = string
     description             = optional(string)
-    mtu                     = optional(number, 1460)
-    enable_global_routing   = optional(bool, false)
-    auto_create_subnetworks = optional(bool, false)
+    mtu                     = optional(number)
+    enable_global_routing   = optional(bool)
+    auto_create_subnetworks = optional(bool)
     attached_projects       = optional(list(string))
     shared_accounts         = optional(list(string))
     subnets = optional(list(object({
       create                   = optional(bool, true)
       project_id               = optional(string)
-      name                     = optional(string, "default")
+      name                     = optional(string)
       description              = optional(string)
       region                   = optional(string)
       stack_type               = optional(string)
       ip_range                 = string
       purpose                  = optional(string)
       role                     = optional(string)
-      private_access           = optional(bool, true)
+      private_access           = optional(bool)
       flow_logs                = optional(bool)
       log_aggregation_interval = optional(string)
       log_sampling_rate        = optional(number)
@@ -128,12 +123,12 @@ variable "vpc_networks" {
     vpc_access_connectors = optional(list(object({
       create             = optional(bool, true)
       project_id         = optional(string)
+      network_project_id = optional(string)
       name               = optional(string)
       region             = optional(string)
       cidr_range         = optional(string)
       subnet_name        = optional(string)
       vpc_network_name   = optional(string)
-      network_project_id = optional(string)
       min_throughput     = optional(number)
       max_throughput     = optional(number)
       min_instances      = optional(number)
@@ -144,3 +139,26 @@ variable "vpc_networks" {
   default = []
 }
 
+
+variable "defaults" {
+  type = object({
+    cloud_router_bgp_asn                   = optional(number)
+    cloud_router_bgp_keepalive_interval    = optional(number)
+    subnet_stack_type                      = optional(string)
+    subnet_private_access                  = optional(bool)
+    subnet_flow_logs                       = optional(bool)
+    subnet_log_aggregation_interval        = optional(string)
+    subnet_log_sampling_rate               = optional(string)
+    cloud_nat_enable_dpa                   = optional(bool)
+    cloud_nat_enable_eim                   = optional(bool)
+    cloud_nat_udp_idle_timeout             = optional(number)
+    cloud_nat_tcp_established_idle_timeout = optional(number)
+    cloud_nat_tcp_time_wait_timeout        = optional(number)
+    cloud_nat_tcp_transitory_idle_timeout  = optional(number)
+    cloud_nat_icmp_idle_timeout            = optional(number)
+    cloud_nat_min_ports_per_vm             = optional(number)
+    cloud_nat_max_ports_per_vm             = optional(number)
+    cloud_nat_log_type                     = optional(string)
+  })
+  default = {}
+}
