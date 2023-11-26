@@ -69,7 +69,7 @@ resource "google_compute_instance" "default" {
   }
   tags = each.value.network_tags
   #metadata_startup_script = each.value.startup_script
-  metadata = each.value.ssh_key != null ? {
+  metadata = each.value.startup_script != null || each.value.ssh_key != null ? {
     startup-script = each.value.startup_script
     instanceSSHKey = each.value.ssh_key
   } : null
