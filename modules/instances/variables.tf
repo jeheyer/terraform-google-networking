@@ -47,3 +47,19 @@ variable "instances" {
   default = []
 }
 
+variable "umigs" {
+  type = list(object({
+    create             = optional(bool, true)
+    project_id         = optional(string)
+    network_project_id = optional(string)
+    network_name       = optional(string)
+    name               = string
+    zone               = string
+    instances          = list(string)
+    named_ports = optional(list(object({
+      name = string
+      port = number
+    })))
+  }))
+  default = []
+}
