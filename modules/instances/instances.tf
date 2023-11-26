@@ -7,7 +7,6 @@ locals {
       name                   = lower(trimspace(coalesce(v.name, "instance-${i + 1}")))
       network_name           = coalesce(v.network_name, "default")
       subnet_name            = coalesce(v.subnet_name, "default")
-      description            = coalesce(v.description, "Managed by Terraform")
       os_project             = coalesce(v.os_project, local.os_project)
       os                     = coalesce(v.os, local.os)
       machine_type           = coalesce(v.machine_type, local.machine_type)
