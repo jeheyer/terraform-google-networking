@@ -33,7 +33,7 @@ locals {
 }
 
 # Give Compute Network User permissions on the subnet to the applicable accounts
-resource "google_compute_subnetwork_iam_binding" "compute" {
+resource "google_compute_subnetwork_iam_binding" "default" {
   for_each   = { for i, v in local.shared_subnets : v.subnet_key => v }
   project    = each.value.subnet_project_id
   region     = each.value.subnet_region
