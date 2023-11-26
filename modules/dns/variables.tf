@@ -24,6 +24,7 @@ variable "dns_zones" {
     })))
     records = optional(list(object({
       create  = optional(bool, true)
+      key     = optional(string)
       name    = string
       type    = optional(string)
       ttl     = optional(number)
