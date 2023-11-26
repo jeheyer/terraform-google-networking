@@ -53,9 +53,9 @@ variable "umigs" {
     project_id         = optional(string)
     network_project_id = optional(string)
     network_name       = optional(string)
-    name               = string
+    name               = optional(string)
     zone               = string
-    instances          = list(string)
+    instances          = optional(list(string))
     named_ports = optional(list(object({
       name = string
       port = number
