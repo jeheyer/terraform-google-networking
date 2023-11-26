@@ -67,9 +67,10 @@ resource "google_compute_instance" "default" {
     image        = each.value.image != null ? substr(replace(each.value.image, "/", "-"), 0, 63) : null
     machine_type = each.value.machine_type
   }
-  tags                    = each.value.network_tags
-  metadata_startup_script = each.value.startup_script
+  tags = each.value.network_tags
+  #metadata_startup_script = each.value.startup_script
   metadata = each.value.ssh_key != null ? {
+    startup-script = each.value.startup_script
     instanceSSHKey = each.value.ssh_key
   } : null
   service_account {
