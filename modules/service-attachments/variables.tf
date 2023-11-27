@@ -8,6 +8,11 @@ variable "region" {
   description = "Default GCP Region Name (can be overridden at resource level)"
   default     = null
 }
+variable "network_project_id" {
+  type        = string
+  description = "Default Shared VPC Host Project (can be overridden at resource level)"
+  default     = null
+}
 
 variable "service_attachments" {
   description = "Services Published via PSC"
