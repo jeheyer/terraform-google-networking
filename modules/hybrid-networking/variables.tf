@@ -21,6 +21,7 @@ variable "cloud_vpn_gateways" {
     name         = optional(string)
     network_name = optional(string)
     region       = string
+stack_type = optional(string)
   }))
   default = []
 }
