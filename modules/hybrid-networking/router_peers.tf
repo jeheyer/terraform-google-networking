@@ -1,9 +1,14 @@
 locals {
-  router_peers = [for i, v in local.router_interfaces :
+  _router_peers = [for i, v in concat(local.interconnect_attachments, local.vpn_tunnels) :
     {
-      name                      = v.peer_name
+      create                    = v.create
+      project_id                = v.project_id
+      name                      = coalesce(v.peer_name, v.interface_name, "${v.name}-${i}")
+      region                    = v.region
+      router                    = v.router
       interface                 = v.interface_name
       peer_ip_address           = v.peer_ip_address
+      advertised_groups         = v.advertised_groups
       peer_asn                  = coalesce(v.peer_asn, v.peer_is_gcp ? 64512 : 65000)
       advertise_mode            = length(coalesce(v.advertised_ip_ranges, [])) > 0 ? "CUSTOM" : "DEFAULT"
       advertised_route_priority = v.advertised_priority
@@ -14,6 +19,11 @@ locals {
       bfd_multiplier            = coalesce(v.bfd_multiplier, 5)
       enable                    = coalesce(v.enable, true)
     }
+  ]
+  router_peers = [for i, v in local._router_peers :
+    merge(v, {
+      key = "${v.project_id}:${v.region}:${v.router}:${v.name}"
+    }) if v.create
   ]
 }
 

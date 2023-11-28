@@ -1,5 +1,5 @@
 locals {
-  cloud_vpn_gateways_0 = [for i, v in var.cloud_vpn_gateways :
+  _cloud_vpn_gateways = [for i, v in var.cloud_vpn_gateways :
     merge(v, {
       create     = coalesce(v.create, true)
       project_id = coalesce(v.project_id, var.project_id)
@@ -7,12 +7,12 @@ locals {
       region     = coalesce(v.region, var.region)
     })
   ]
-  cloud_vpn_gateways_1 = [for i, v in local.cloud_vpn_gateways_0 :
+  __cloud_vpn_gateways = [for i, v in local._cloud_vpn_gateways :
     merge(v, {
       name = coalesce(v.name, "vpngw-${v.network}")
     })
   ]
-  cloud_vpn_gateways = [for i, v in local.cloud_vpn_gateways_1 :
+  cloud_vpn_gateways = [for i, v in local.__cloud_vpn_gateways :
     merge(v, {
       key = "${v.project_id}:${v.region}:${v.name}"
     }) if v.create

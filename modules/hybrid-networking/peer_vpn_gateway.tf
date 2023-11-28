@@ -4,7 +4,7 @@ locals {
     2 = "TWO_IPS_REDUNDANCY"
     4 = "FOUR_IPS_REDUNDANCY"
   }
-  peer_vpn_gateways_0 = [for i, v in var.peer_vpn_gateways :
+  _peer_vpn_gateways = [for i, v in var.peer_vpn_gateways :
     {
       create       = coalesce(v.create, true)
       project_id   = coalesce(v.project_id, var.project_id)
@@ -14,7 +14,7 @@ locals {
       labels       = coalesce(v.labels, {})
     }
   ]
-  peer_vpn_gateways = [for i, v in local.peer_vpn_gateways_0 :
+  peer_vpn_gateways = [for i, v in local._peer_vpn_gateways :
     merge(v, {
       redundancy_type = lookup(local.redundancy_types, length(v.ip_addresses), "TWO_IPS_REDUNDANCY")
       key             = "${v.project_id}:${v.name}"
