@@ -21,7 +21,7 @@ variable "cloud_vpn_gateways" {
     name         = optional(string)
     network_name = optional(string)
     region       = string
-stack_type = optional(string)
+    stack_type   = optional(string)
   }))
   default = []
 }
@@ -78,8 +78,9 @@ variable "vpns" {
         range       = string
         description = optional(string)
       })))
-      enable     = optional(bool)
-      enable_bfd = optional(bool)
+      enable      = optional(bool)
+      enable_bfd  = optional(bool)
+      enable_ipv6 = optional(bool)
     }))
   }))
   default = []

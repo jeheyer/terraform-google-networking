@@ -18,7 +18,7 @@ locals {
       bfd_min_receive_interval  = coalesce(v.bfd_min_receive_interval, 1000)
       bfd_multiplier            = coalesce(v.bfd_multiplier, 5)
       enable                    = coalesce(v.enable, true)
-      enable_ipv6                    = coalesce(v.enable_ipv6, false)
+      enable_ipv6               = coalesce(v.enable_ipv6, false)
     }
   ]
   router_peers = [for i, v in local._router_peers :
@@ -56,7 +56,7 @@ resource "google_compute_router_peer" "default" {
       session_initialization_mode = each.value.enable_bfd ? "ACTIVE" : "DISABLED"
     }
   }
-  enable     = each.value.enable
-  enable_ipv6     = each.value.enable_ipv6
-  depends_on = [google_compute_router_interface.default]
+  enable      = each.value.enable
+  enable_ipv6 = each.value.enable_ipv6
+  depends_on  = [google_compute_router_interface.default]
 }
