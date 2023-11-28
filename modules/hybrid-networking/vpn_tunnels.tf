@@ -91,7 +91,7 @@ resource "google_compute_vpn_tunnel" "default" {
   description                     = each.value.description
   region                          = each.value.region
   router                          = each.value.router
-  peer_ip                         = null
+  peer_ip                         = each.value.peer_ip_address
   vpn_gateway                     = each.value.vpn_gateway
   peer_external_gateway           = each.value.peer_external_gateway
   peer_gcp_gateway                = each.value.peer_gcp_gateway
