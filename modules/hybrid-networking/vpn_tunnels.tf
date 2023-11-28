@@ -27,6 +27,7 @@ locals {
           peer_ip_address                 = tunnel.peer_bgp_ip
           peer_asn                        = try(coalesce(tunnel.peer_bgp_asn, vpn.peer_bgp_asn), null)
           enable                          = coalesce(tunnel.enable, true)
+          enable_ipv6                     = coalesce(tunnel.enable, false)
           enable_bfd                      = try(coalesce(tunnel.enable_bfd, vpn.enable_bfd), null)
           bfd_min_transmit_interval       = 1000
           bfd_min_receive_interval        = 1000
@@ -48,7 +49,7 @@ locals {
   ]
   vpn_tunnels_2 = [for i, v in local.vpn_tunnels_1 :
     merge(v, {
-      interface_name = coalesce(v.interface_name, "${v.name}")
+      interface_name = coalesce(v.interface_name, "if-${v.name}")
       #peer_name      = coalesce(v.peer_name, "${v.name}-${v.peer_external_gateway_interface}")
       key                   = "${v.project_id}:${v.region}:${v.name}"
       cloud_vpn_gateway_key = "${v.project_id}:${v.region}:${v.cloud_vpn_gateway}"

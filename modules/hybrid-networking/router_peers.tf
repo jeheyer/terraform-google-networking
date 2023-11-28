@@ -48,10 +48,10 @@ resource "google_compute_router_peer" "default" {
     }
   }
   dynamic "bfd" {
-    for_each = each.value.enable_bfd ? [true] : []
+    for_each = [true] #each.value.enable_bfd ? [true] : []
     content {
       min_receive_interval        = each.value.bfd_min_receive_interval
-      min_transmit_interval       = each.value.bfd_min_transit_interval
+      min_transmit_interval       = each.value.bfd_min_transmit_interval
       multiplier                  = each.value.bfd_multiplier
       session_initialization_mode = each.value.enable_bfd ? "ACTIVE" : "DISABLED"
     }

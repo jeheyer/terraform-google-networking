@@ -16,7 +16,6 @@ locals {
       key = "${v.project_id}:${v.region}:${v.router}:${v.name}"
     }) if v.create
   ]
-  #  vpn_tunnel_names = { for i, v in local.vpn_tunnels : v.key => v.name }
 }
 
 # Cloud Router Interface
