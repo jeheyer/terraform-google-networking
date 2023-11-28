@@ -131,7 +131,7 @@ variable "defaults" {
     cloud_router_bgp_keepalive_interval = optional(number, 20)
     vpn_ike_version                     = optional(number, 2)
     vpn_ike_psk_length                  = optional(number, 20)
-    vpn_ike_psk                         = optional(string, "abcdefgji01234567890")
+    vpn_ike_psk                         = optional(string)
   })
   default = {}
 }
