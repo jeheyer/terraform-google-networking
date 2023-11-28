@@ -40,7 +40,7 @@ output "vpn_tunnels" {
       peer_gateway_ip      = try(google_compute_vpn_tunnel.default[v.key].peer_ip, null)
       cloud_vpn_gateway_ip = try(google_compute_ha_vpn_gateway.default[v.cloud_vpn_gateway].vpn_interfaces[v.vpn_gateway_interface].ip_address, [])
       ike_version          = v.ike_version
-      ike_psk              = v.ike_psk
+      shared_secret        = v.shared_secret
       detailed_status      = try(google_compute_vpn_tunnel.default[v.key].detailed_status, "Unknown")
     }
   } # if v.create }
