@@ -43,7 +43,7 @@ locals {
   )
   vpn_tunnels_1 = [for i, v in local.vpn_tunnels_0 :
     merge(v, {
-      name        = coalesce(v.tunnel_name, v.vpn_name != null ? "${v.vpn_name}-${v.tunnel_index}" : null, "vpn-${v.vpn_index}-${v.tunnel_index}")
+      name        = coalesce(v.tunnel_name, v.vpn_name != null ? "${v.vpn_name}-${v.tunnel_index}" : null, "vpn-${v.region}-${v.vpn_index}-${v.tunnel_index}")
       peer_is_gcp = v.peer_gcp_vpn_gateway != null ? true : false
     })
   ]

@@ -6,7 +6,7 @@ locals {
       region                  = v.region
       router                  = v.router
       ip_range                = v.ip_range
-      name                    = v.interface_name
+      name                    = lower(trimspace(v.interface_name))
       vpn_tunnel              = v.is_vpn ? v.tunnel_name : null
       interconnect_attachment = v.is_interconnect ? v.attachment_name : null
     }

@@ -3,7 +3,7 @@ locals {
     {
       create                    = v.create
       project_id                = v.project_id
-      name                      = coalesce(v.peer_name, v.interface_name, "${v.name}-${i}")
+      name                      = lower(trimspace(coalesce(v.peer_name, v.interface_name, "${v.name}-${i}")))
       region                    = v.region
       router                    = v.router
       interface                 = v.interface_name
