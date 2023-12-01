@@ -56,16 +56,16 @@ locals {
         v.ranges,
         flatten([for rt in v.range_types : try(data.google_netblock_ip_ranges.default[rt].cidr_blocks, null)]),
       ) : null
-      traffic = flatten(concat(
+      traffic = coalesce(
+        v.action == "ALLOW" ? v.allow : null,
+        v.action == "DENY" ? v.deny : null,
         [for protocol in v.protocols :
           {
             protocol = lower(protocol)
             ports    = v.ports
           }
         ],
-        v.action == "ALLOW" ? v.allow : [],
-        v.action == "DENY" ? v.deny : [],
-      ))
+      )
       rule_description_fields = [
         v.network,
         v.priority,
