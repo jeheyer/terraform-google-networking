@@ -164,11 +164,11 @@ variable "vpc_networks" {
       action                  = optional(string)
       allow = optional(list(object({
         protocol = string
-        ports    = list(string)
+        ports    = optional(list(string))
       })))
       deny = optional(list(object({
         protocol = string
-        ports    = list(string)
+        ports    = optional(list(string))
       })))
       enforcement = optional(bool)
       disabled    = optional(bool)
