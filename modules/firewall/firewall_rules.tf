@@ -63,7 +63,8 @@ locals {
             ports    = v.ports
           }
         ],
-        [v.allow]
+        v.action == "ALLOW" ? v.allow : [],
+        v.action == "DENY" ? v.deny : [],
       ))
       rule_description_fields = [
         v.network,
