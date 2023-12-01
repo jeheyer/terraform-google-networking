@@ -88,7 +88,7 @@ locals {
 
 # https://github.com/hashicorp/terraform-provider-google/issues/16619
 resource "null_resource" "vpn_tunnels" {
-  for_each                        = { for i, v in local.vpn_tunnels : v.key => true }
+  for_each = { for i, v in local.vpn_tunnels : v.key => true }
 }
 
 resource "google_compute_vpn_tunnel" "default" {
@@ -106,9 +106,9 @@ resource "google_compute_vpn_tunnel" "default" {
   shared_secret                   = each.value.shared_secret
   vpn_gateway_interface           = each.value.vpn_gateway_interface
   peer_external_gateway_interface = each.value.peer_external_gateway_interface
-  depends_on                      = [
-  google_compute_ha_vpn_gateway.default,
-  google_compute_external_vpn_gateway.default,
-  null_resource.vpn_tunnels,
+  depends_on = [
+    google_compute_ha_vpn_gateway.default,
+    google_compute_external_vpn_gateway.default,
+    null_resource.vpn_tunnels,
   ]
 }
