@@ -42,7 +42,7 @@ data "google_netblock_ip_ranges" "default" {
 locals {
   ___firewall_rules = [for i, v in local.__firewall_rules :
     merge(v, {
-      name                    = lower(trimspace((coalesce(v.name, "fwr-${i}")))
+      name                    = lower(trimspace(coalesce(v.name, "fwr-${i}")))
       network_link            = "projects/${v.project_id}/global/networks/${v.network}"
       source_tags             = v.direction == "INGRESS" ? v.source_tags : null
       source_service_accounts = v.direction == "INGRESS" ? v.source_service_accounts : null
