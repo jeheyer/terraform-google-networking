@@ -12,6 +12,5 @@ locals {
 
 module "firewall-rules" {
   source         = "git::https://github.com/jeheyer/terraform-google-networking//modules/firewall"
-  for_each       = { for i, v in local.firewall_rules : v.key => v }
-  firewall_rules = each.value
+  firewall_rules = local.firewall_rules
 }
