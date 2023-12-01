@@ -74,8 +74,8 @@ locals {
   firewall_rules = [for i, v in local.___firewall_rules :
     merge(v, {
       # If no IP ranges, use 169.254.169.254 since allowing 0.0.0.0/0 may not be intended
-      source_ranges      = coalescelist(v.source_ranges, ["169.254.169.254"])
-      destination_ranges = coalescelist(v.destination_ranges, ["169.254.169.254"])
+      source_ranges      = v.direction == "INGRESS" ? coalescelist(v.source_ranges, ["169.254.169.254"]) : null
+      destination_ranges = v.direction == "EGRESS" ? coalescelist(v.destination_ranges, ["169.254.169.254"]) : null
       key                = "${v.project_id}:${v.name}"
     }) if v.create
   ]
