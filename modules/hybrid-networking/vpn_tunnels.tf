@@ -86,6 +86,7 @@ locals {
   ]
 }
 
+# Generate a null resource for each VPN tunnel, so that an existing tunnel is completely destroyed before attempting create
 # https://github.com/hashicorp/terraform-provider-google/issues/16619
 resource "null_resource" "vpn_tunnels" {
   for_each = { for i, v in local.vpn_tunnels : v.key => true }
