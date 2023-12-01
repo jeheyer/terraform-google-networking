@@ -136,11 +136,7 @@ variable "vpc_networks" {
       machine_type       = optional(string)
     })))
   }))
-  default = []
-}
-variable "firewall_rules" {
-  description = "List of Firewall Rules"
-  type = list(object({
+  firewall_rules = optional(list(object({
     create                  = optional(bool, true)
     project_id              = optional(string)
     name                    = optional(string)
@@ -177,10 +173,9 @@ variable "firewall_rules" {
     })))
     enforcement = optional(bool)
     disabled    = optional(bool)
-  }))
+  })))
   default = []
 }
-
 
 variable "defaults" {
   type = object({
