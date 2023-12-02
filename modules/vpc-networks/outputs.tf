@@ -13,6 +13,12 @@ output "vpc_networks" {
           ip_range = s.ip_range
           id       = try(google_compute_subnetwork.default[s.key].id, null)
       } if s.network == v.name]
+      peering_connections = [for i, p in local.peerings :
+        {
+          peer_network  = p.peer_network
+          state_details = try(google_compute_network_peering.default[p.key].state_detils, null)
+        }
+      ]
     }
   ]
 }
