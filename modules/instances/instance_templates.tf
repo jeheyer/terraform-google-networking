@@ -4,7 +4,7 @@ locals {
       create             = coalesce(v.create, true)
       project_id         = coalesce(v.project_id, v.project_id)
       network_project_id = coalesce(v.network_project_id, var.network_project_id, v.project_id, var.project_id)
-      name               = lower(trimspace(coalesce(v.name, "umig-${i + 1}")))
+      name               = lower(trimspace(coalesce(v.name, "template-${i + 1}")))
       network            = coalesce(v.network_name, v.network, "default")
       named_ports        = coalesce(v.named_ports, [])
       disk_type          = coalesce(v.disk_type, "pd-standard")
@@ -13,7 +13,7 @@ locals {
       scopes             = coalescelist(v.service_account_scopes, ["cloud-platform"])
     })
   ]
-  instance_templates = [for i, v in local._instanced_templates :
+  instance_templates = [for i, v in local._instance_templates :
     merge(v, {
       network      = "projects/${v.network_project_id}/global/networks/${v.network}"
       source_image = coalesce(v.image, "${v.os_project}/${v.os}")
@@ -36,7 +36,7 @@ resource "google_compute_instance_template" "default" {
   disk {
     disk_type    = each.value.disk_type
     disk_size_gb = each.value.disk_size
-    source_image = each.value.image
+    source_image = each.value.source_image
     auto_delete  = each.value.disk_auto_delete
     boot         = each.value.disk_boot
   }
