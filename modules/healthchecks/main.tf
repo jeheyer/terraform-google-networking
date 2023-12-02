@@ -132,7 +132,7 @@ resource "google_compute_health_check" "default" {
     }
   }
   check_interval_sec  = each.value.interval
-  timeout_sec         = each.value.value.timeout
+  timeout_sec         = each.value.timeout
   healthy_threshold   = each.value.healthy_threshold
   unhealthy_threshold = each.value.unhealthy_threshold
   log_config {
