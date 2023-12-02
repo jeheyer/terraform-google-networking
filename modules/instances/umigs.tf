@@ -5,13 +5,13 @@ locals {
       project_id         = coalesce(v.project_id, var.project_id)
       network_project_id = coalesce(v.network_project_id, var.network_project_id, v.project_id, var.project_id)
       name               = lower(trimspace(coalesce(v.name, "umig-${i + 1}")))
-      network_name       = coalesce(v.network_name, "default")
+      network      = coalesce(v.network_name, v.network, "default")
       named_ports        = coalesce(v.named_ports, [])
     })
   ]
   umigs = [for i, v in local.umigs_0 :
     merge(v, {
-      network      = "projects/${v.network_project_id}/global/networks/${v.network_name}"
+      network      = "projects/${v.network_project_id}/global/networks/${v.network}"
       zones_prefix = "projects/${v.project_id}/zones/${v.zone}"
       key          = "${v.project_id}:${v.zone}:${v.name}"
     }) if v.create
