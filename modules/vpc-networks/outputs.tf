@@ -17,7 +17,7 @@ output "vpc_networks" {
         {
           peer_network  = p.peer_network
           state = try(google_compute_network_peering.default[p.key].state, null)
-          state_details = try(google_compute_network_peering.default[p.key].state_detils, null)
+          state_details = try(google_compute_network_peering.default[p.key].state_details, null)
         }
       ]
     }
