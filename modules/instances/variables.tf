@@ -48,6 +48,34 @@ variable "instances" {
   default = []
 }
 
+variable "instance_templates" {
+  description = "List of Instance Templates"
+  type = list(object({
+    create                 = optional(bool, true)
+    project_id             = optional(string)
+    network_project_id     = optional(string)
+    name                   = optional(string)
+    description            = optional(string)
+    region                 = string
+    zone                   = optional(string)
+    network_name           = optional(string)
+    network                = optional(string)
+    subnet_name            = optional(string)
+    machine_type           = optional(string)
+    disk_type              = optional(string)
+    disk_size              = optional(number)
+    image                  = optional(string)
+    os                     = optional(string)
+    os_project             = optional(string)
+    startup_script         = optional(string)
+    service_account_email  = optional(string)
+    service_account_scopes = optional(list(string))
+    network_tags           = optional(list(string))
+    can_ip_forward         = optional(bool)
+  }))
+  default = []
+}
+
 variable "migs" {
   description = "List of Managed Instance Groups"
   type = list(object({

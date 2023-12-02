@@ -32,7 +32,7 @@ resource "google_compute_instance_template" "default" {
   tags                    = each.value.network_tags
   metadata                = each.value.metadata
   metadata_startup_script = each.value.startup_script
-  can_ip_forward          = each.value.enable_ip_forwarding
+  can_ip_forward          = each.value.can_ip_forwarding
   disk {
     disk_type    = each.value.disk_type
     disk_size_gb = each.value.disk_size
