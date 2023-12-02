@@ -4,14 +4,13 @@ locals {
       [for i, v in coalesce(vpc_network.firewall_rules, []) :
         merge(v, {
           create         = coalesce(v.create, true)
-          project_id     = lower(trimspace(coalesce(v.project_id, var.project_id)))
-          network_name   = vpc_network.name
+          project_id     = trimspace(lower(coalesce(v.project_id, var.project_id)))
           disabled       = coalesce(v.disabled, false)
           gen_short_name = v.name == null && v.short_name == null ? true : false
           priority       = coalesce(v.priority, 1000)
           logging        = coalesce(v.logging, false)
           direction      = length(coalesce(v.destination_ranges, [])) > 0 ? "EGRESS" : upper(coalesce(v.direction, "ingress"))
-          network        = coalesce(v.network_name, v.network, "default")
+          network        = trimspace(lower(coalesce(v.network, vpc_network.name, "default")))
           action         = upper(coalesce(v.action, v.allow != null ? "ALLOW" : (v.deny != null ? "DENY" : "ALLOW")))
           ports          = coalesce(v.ports, v.port != null ? [v.port] : [])
           protocols      = coalesce(v.protocols, v.protocol != null ? [v.protocol] : ["all"])
