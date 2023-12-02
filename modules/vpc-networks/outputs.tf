@@ -16,6 +16,7 @@ output "vpc_networks" {
       peering_connections = [for i, p in local.peerings :
         {
           peer_network  = p.peer_network
+          state = try(google_compute_network_peering.default[p.key].state, null)
           state_details = try(google_compute_network_peering.default[p.key].state_detils, null)
         }
       ]
