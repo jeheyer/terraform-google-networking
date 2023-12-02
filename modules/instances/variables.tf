@@ -15,6 +15,7 @@ variable "network_project_id" {
 }
 
 variable "instances" {
+  description = "List of Standalone Instances"
   type = list(object({
     create                 = optional(bool, true)
     project_id             = optional(string)
@@ -47,13 +48,39 @@ variable "instances" {
   default = []
 }
 
+variable "migs" {
+  description = "List of Managed Instance Groups"
+  type = list(object({
+    create                           = optional(bool, true)
+    project_id                       = optional(string)
+    name_prefix                      = optional(string)
+    base_instance_name               = optional(string)
+    region                           = string
+    instance_redistribution_type     = optional(string)
+    distribution_policy_target_shape = optional(string)
+    update_type                      = optional(string)
+    update_minimal_action            = optional(string)
+    update_most_disruptive_action    = optional(string)
+    update_replacement_method        = optional(string)
+    auto_healing_initial_delay       = optional(number)
+    healthchecks = list(object({
+      id   = optional(string)
+      name = optional(string)
+    }))
+  }))
+  default = []
+}
+
+
 variable "umigs" {
+  description = "List of Unmanaged Instance Groups"
   type = list(object({
     create             = optional(bool, true)
     project_id         = optional(string)
     network_project_id = optional(string)
-    network_name       = optional(string)
     name               = optional(string)
+    network_name       = optional(string)
+    network            = optional(string)
     zone               = string
     instances          = optional(list(string))
     named_ports = optional(list(object({
