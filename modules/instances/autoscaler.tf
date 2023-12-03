@@ -9,7 +9,7 @@ locals {
       min_replicas          = v.min_replicas != 0 ? coalesce(v.min_replicas, 1) : null
       max_replicas          = v.max_replicas != 0 ? coalesce(v.max_replicas, 10) : null
       mode                  = v.autoscaling_mode
-      cooldown_period       = coalesce(v.cool_down_period, 60)
+      cooldown_period       = coalesce(v.cooldown_period, 60)
       cpu_target            = coalesce(v.cpu_target, 0.60)
       cpu_predictive_method = coalesce(v.cpu_predictive_method, "NONE")
     } if v.autoscaling_mode != "OFF"
