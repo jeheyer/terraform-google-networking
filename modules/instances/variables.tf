@@ -76,6 +76,7 @@ variable "instance_templates" {
     service_account_scopes = optional(list(string))
     network_tags           = optional(list(string))
     labels                 = optional(map(string))
+    metadata               = optional(map(string))
     can_ip_forward         = optional(bool)
   }))
   default = []

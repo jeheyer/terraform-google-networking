@@ -6,3 +6,16 @@ locals {
   service_account_scopes = ["compute-rw", "storage-rw", "logging-write", "monitoring"]
   zones                  = ["b", "c", "a"]
 }
+
+# Get a list of available zones for each region
+locals {
+  regions = toset(flatten(
+    [for i, v in local._instances : v.region],
+    [for i, v in local._migs : v.region]
+  ))
+}
+data "google_compute_zones" "available" {
+  for_each = local.regions
+  #project = each.value.project_id
+  region = each.value
+}

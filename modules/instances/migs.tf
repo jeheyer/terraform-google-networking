@@ -1,5 +1,8 @@
+
+
 locals {
-  _migs = [for i, v in var.migs :
+  _migs = [
+    for i, v in var.migs :
     merge(v, {
       create                         = coalesce(v.create, true)
       project_id                     = coalesce(v.project_id, var.project_id)
@@ -15,10 +18,16 @@ locals {
       initial_delay_sec              = coalesce(v.auto_healing_initial_delay, 300)
     })
   ]
+}
+
+
+
+locals {
   __migs = [for i, v in local._migs :
     merge(v, {
       name      = "${v.name_prefix}-${v.region}"
       hc_prefix = "projects/${v.project_id}/${v.region != null ? "regions/${v.region}" : "global"}"
+      zones     = lookup(google_compute_zones.available, v.region, [for z in ["b", "c"] : "${v.region}-${z}"])
     })
   ]
   migs = [for i, v in local.__migs :
@@ -36,6 +45,7 @@ locals {
     }) if v.create
   ]
 }
+
 
 # Regional Managed Instance Groups
 resource "google_compute_region_instance_group_manager" "default" {
