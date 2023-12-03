@@ -39,6 +39,7 @@ variable "instances" {
     labels                 = optional(map(string))
     can_ip_forward         = optional(bool)
     delete_protection      = optional(bool)
+    allow_stopping_for_update      = optional(bool)
     nat_ip_addresses       = optional(list(string))
     nat_ip_names           = optional(list(string))
     ssh_key                = optional(string)
