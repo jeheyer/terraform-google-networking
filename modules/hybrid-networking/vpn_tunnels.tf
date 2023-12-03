@@ -51,7 +51,7 @@ locals {
     merge(v, {
       interface_name = coalesce(v.interface_name, "if-${v.name}")
       #peer_name      = coalesce(v.peer_name, "${v.name}-${v.peer_external_gateway_interface}")
-      index_key                   = "${v.project_id}/${v.region}/${v.name}"
+      index_key             = "${v.project_id}/${v.region}/${v.name}"
       cloud_vpn_gateway_key = "${v.project_id}/${v.region}/${v.cloud_vpn_gateway}"
     })
   ]
