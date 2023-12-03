@@ -5,7 +5,7 @@ locals {
       project_id                = coalesce(v.project_id, var.project_id)
       network_project_id        = coalesce(v.network_project_id, var.network_project_id, v.project_id, var.project_id)
       name                      = lower(trimspace(coalesce(v.name, "instance-${i + 1}")))
-      network_name              = coalesce(v.network_name, "default")
+      network              = coalesce(v.network_name, "default")
       subnet_name               = coalesce(v.subnet_name, "default")
       os_project                = coalesce(v.os_project, local.os_project)
       os                        = coalesce(v.os, local.os)
@@ -49,9 +49,9 @@ resource "google_compute_instance" "default" {
     }
   }
   dynamic "network_interface" {
-    for_each = each.value.network_name != null && each.value.subnet_name != null ? [true] : []
+    for_each = each.value.network != null && each.value.subnet_name != null ? [true] : []
     content {
-      network            = each.value.network_name
+      network            = each.value.network
       subnetwork_project = each.value.network_project_id
       subnetwork         = each.value.subnet_name
       /* TODO

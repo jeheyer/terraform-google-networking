@@ -6,6 +6,9 @@ locals {
       network_project_id = coalesce(v.network_project_id, var.network_project_id, v.project_id, var.project_id)
       name               = lower(trimspace(coalesce(v.name, "template-${i + 1}")))
       network            = coalesce(v.network_name, v.network, "default")
+      can_ip_forward     = coalesce(v.can_ip_forward, false)
+      disk_boot          = coalesce(v.disk_boot, true)
+      disk_auto_delete   = coalesce(v.disk_auto_delete, true)
       disk_type          = coalesce(v.disk_type, "pd-standard")
       disk_size_gb       = coalesce(v.disk_size, 20)
       os_project         = coalesce(v.os_project, local.os_project)
@@ -33,7 +36,7 @@ resource "google_compute_instance_template" "default" {
   tags                    = each.value.network_tags
   metadata                = each.value.metadata
   metadata_startup_script = each.value.startup_script
-  can_ip_forward          = each.value.can_ip_forwarding
+  can_ip_forward          = each.value.can_ip_forward
   disk {
     disk_type    = each.value.disk_type
     disk_size_gb = each.value.disk_size
@@ -44,7 +47,7 @@ resource "google_compute_instance_template" "default" {
   network_interface {
     network            = each.value.network
     subnetwork_project = each.value.network_project_id
-    subnetwork         = each.value.subnet_id
+    subnetwork         = each.value.subnet_name
     queue_count        = 0
   }
   service_account {

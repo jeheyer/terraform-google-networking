@@ -63,6 +63,8 @@ variable "instance_templates" {
     network                = optional(string)
     subnet_name            = optional(string)
     machine_type           = optional(string)
+    disk_boot             = optional(bool)
+    disk_auto_delete              = optional(bool)
     disk_type              = optional(string)
     disk_size              = optional(number)
     image                  = optional(string)
