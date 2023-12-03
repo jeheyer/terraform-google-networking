@@ -14,6 +14,7 @@ output "umigs" {
   value = [for i, v in local.umigs :
     {
       key  = v.key
+      id   = try(google_compute_instance_group.default[v.key].id, null)
       name = try(google_compute_instance_group.default[v.key].name, null)
       zone = try(google_compute_instance_group.default[v.key].zone, null)
     }
