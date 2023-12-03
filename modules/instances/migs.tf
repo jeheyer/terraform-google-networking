@@ -1,21 +1,18 @@
 locals {
-  _migs = [
-    for i, v in var.migs :
+  _migs = [for i, v in var.migs :
     merge(v, {
-      create                              = coalesce(v.create, true)
-      project_id                          = coalesce(v.project_id, var.project_id)
-      network_project_id                  = coalesce(v.network_project_id, var.network_project_id, v.project_id, var.project_id)
-      base_instance_name                  = coalesce(v.base_instance_name, v.name_prefix)
-      region                              = coalesce(v.region, var.region)
-      distribution_target_shape           = upper(coalesce(v.distribution_policy_target_shape, "EVEN"))
-      update_type                         = upper(coalesce(v.update_type, "OPPORTUNISTIC"))
-      update_instance_redistribution_type = upper(coalesce(v.update_instance_redistribution_type, "PROACTIVE"))
-      update_minimal_action               = upper(coalesce(v.update_minimal_action, "RESTART"))
-      most_disruptive_allowed_action      = upper(coalesce(v.update_most_disruptive_action, "REPLACE"))
-      replacement_method                  = upper(coalesce(v.update_replacement_method, "SUBSTITUTE"))
-      initial_delay_sec                   = coalesce(v.auto_healing_initial_delay, 300)
-      min_replicas                        = coalesce(v.min_replicas, 0)
-      max_replicas                        = coalesce(v.max_replicas, 0)
+      create                                = coalesce(v.create, true)
+      project_id                            = coalesce(v.project_id, var.project_id)
+      network_project_id                    = coalesce(v.network_project_id, var.network_project_id, v.project_id, var.project_id)
+      base_instance_name                    = coalesce(v.base_instance_name, v.name_prefix)
+      region                                = coalesce(v.region, var.region)
+      distribution_target_shape             = upper(coalesce(v.distribution_policy_target_shape, "EVEN"))
+      update_type                           = upper(coalesce(v.update_type, "OPPORTUNISTIC"))
+      update_instance_redistribution_type   = upper(coalesce(v.update_instance_redistribution_type, "PROACTIVE"))
+      update_minimal_action                 = upper(coalesce(v.update_minimal_action, "RESTART"))
+      update_most_disruptive_allowed_action = upper(coalesce(v.update_most_disruptive_action, "REPLACE"))
+      replacement_method                    = upper(coalesce(v.update_replacement_method, "SUBSTITUTE"))
+      initial_delay_sec                     = coalesce(v.auto_healing_initial_delay, 300)
     })
   ]
 }
@@ -23,10 +20,10 @@ locals {
 locals {
   __migs = [for i, v in local._migs :
     merge(v, {
-      name             = "${v.name_prefix}-${v.region}"
+      name             = coalesce(v.name, v.name_prefix, "mig-${i}")
       hc_prefix        = "projects/${v.project_id}/${v.region != null ? "regions/${v.region}" : "global"}"
       zones            = try(data.google_compute_zones.available[v.region].names, [for z in ["b", "c"] : "${v.region}-${z}"])
-      autoscaling_mode = upper(coalesce(v.autoscaling_mode, v.min_replicas > 0 || v.max_replicas > 0 ? "ON" : "OFF"))
+      autoscaling_mode = upper(coalesce(v.autoscaling_mode, v.min_replicas != null || v.max_replicas != null ? "ON" : "OFF"))
       is_regional      = v.region != null ? true : false
     })
   ]

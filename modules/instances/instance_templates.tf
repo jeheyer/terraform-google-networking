@@ -16,13 +16,14 @@ locals {
       machine_type           = coalesce(v.machine_type, local.machine_type)
       labels                 = { for k, v in coalesce(v.labels, {}) : k => lower(replace(v, " ", "_")) }
       service_account_scopes = coalescelist(v.service_account_scopes, ["cloud-platform"])
+      metadata               = merge(local.metadata, v.metadata, v.ssh_key != null ? { instanceSSHKey = v.ssh_key } : {})
     })
   ]
   instance_templates = [for i, v in local._instance_templates :
     merge(v, {
       network      = "projects/${v.network_project_id}/global/networks/${v.network}"
       source_image = coalesce(v.image, "${v.os_project}/${v.os}")
-      key          = "${v.project_id}:${v.region}:${v.name}"
+      key          = "${v.project_id}:${v.name_prefix}"
     }) if v.create
   ]
 }

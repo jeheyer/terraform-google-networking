@@ -5,6 +5,10 @@ locals {
   os                     = "debian-11"
   service_account_scopes = ["compute-rw", "storage-rw", "logging-write", "monitoring"]
   zones                  = ["b", "c", "a"]
+  metadata = {
+    enable-osconfig         = "true"
+    enable-guest-attributes = "true"
+  }
 }
 
 # Get a list of available zones for each region

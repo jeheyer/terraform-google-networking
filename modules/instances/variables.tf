@@ -77,6 +77,7 @@ variable "instance_templates" {
     network_tags           = optional(list(string))
     labels                 = optional(map(string))
     metadata               = optional(map(string))
+    ssh_key                = optional(string)
     can_ip_forward         = optional(bool)
   }))
   default = []
@@ -88,6 +89,7 @@ variable "migs" {
     create                              = optional(bool, true)
     project_id                          = optional(string)
     network_project_id                  = optional(string)
+    name                                = optional(string)
     name_prefix                         = optional(string)
     base_instance_name                  = optional(string)
     region                              = string
