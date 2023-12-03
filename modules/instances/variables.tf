@@ -102,6 +102,7 @@ variable "migs" {
       id   = optional(string)
       name = optional(string)
     }))
+    autoscaling_mode      = optional(string)
     min_replicas          = optional(number)
     max_replicas          = optional(number)
     cpu_target            = optional(number)
