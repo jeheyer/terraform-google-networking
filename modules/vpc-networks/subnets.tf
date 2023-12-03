@@ -1,11 +1,11 @@
 locals {
-  subnets_0 = flatten([for n in local.vpc_networks :
+  _subnets = flatten([for n in local.vpc_networks :
     [for i, v in coalesce(n.subnets, []) :
       merge(v, {
         create               = coalesce(v.create, true)
         project_id           = coalesce(v.project_id, n.project_id, var.project_id)
         name                 = coalesce(v.name, "subnet-${i}")
-        network              = google_compute_network.default[n.key].name
+        network              = google_compute_network.default[n.index_key].name
         purpose              = upper(coalesce(v.purpose, "PRIVATE"))
         region               = coalesce(v.region, var.region)
         private_access       = coalesce(v.private_access, var.defaults.subnet_private_access, false)
@@ -25,18 +25,18 @@ locals {
       })
     ]
   ])
-  subnets = [for i, v in local.subnets_0 :
+  subnets = [for i, v in local._subnets :
     merge(v, {
-      key                  = "${v.project_id}:${v.region}:${v.name}"
+      index_key            = "${v.project_id}/${v.region}/${v.name}"
       is_private           = v.purpose == "PRIVATE" ? true : false
       is_proxy_only        = contains(["INTERNAL_HTTPS_LOAD_BALANCER", "REGIONAL_MANAGED_PROXY"], v.purpose) ? true : false
       has_secondary_ranges = length(v.secondary_ranges) > 0 ? true : false
-    }) if v.create
+    }) if v.create == true
   ]
 }
 
 resource "google_compute_subnetwork" "default" {
-  for_each                 = { for i, v in local.subnets : v.key => v }
+  for_each                 = { for i, v in local.subnets : v.index_key => v }
   project                  = var.project_id
   name                     = each.value.name
   description              = each.value.description

@@ -1,5 +1,5 @@
 locals {
-  vpc_networks_0 = [for i, v in coalesce(var.vpc_networks, []) :
+  _vpc_networks = [for i, v in coalesce(var.vpc_networks, []) :
     merge(v, {
       project_id              = coalesce(v.project_id, var.project_id)
       name                    = coalesce(v.name, "vpc-network-${i}")
@@ -8,16 +8,16 @@ locals {
       auto_create_subnetworks = coalesce(v.auto_create_subnetworks, false)
     }) if v.create
   ]
-  vpc_networks = [for i, v in local.vpc_networks_0 :
+  vpc_networks = [for i, v in local._vpc_networks :
     merge(v, {
-      key = "${v.project_id}:${v.name}"
+      index_key = "${v.project_id}/${v.name}"
     })
   ]
 }
 
 # VPC Network
 resource "google_compute_network" "default" {
-  for_each                = { for i, v in local.vpc_networks : v.key => v }
+  for_each                = { for i, v in local.vpc_networks : v.index_key => v }
   project                 = each.value.project_id
   name                    = each.value.name
   description             = each.value.description

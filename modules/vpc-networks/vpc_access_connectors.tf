@@ -1,5 +1,5 @@
 locals {
-  vpc_access_connectors_0 = flatten([for n in local.vpc_networks :
+  _vpc_access_connectors = flatten([for n in local.vpc_networks :
     [for i, v in coalesce(n.vpc_access_connectors, []) :
       merge(v, {
         create             = coalesce(v.create, true)
@@ -16,16 +16,16 @@ locals {
       })
     ]
   ])
-  vpc_access_connectors = [for i, v in local.vpc_access_connectors_0 :
+  vpc_access_connectors = [for i, v in local._vpc_access_connectors :
     merge(v, {
-      key = "${v.project_id}:${v.region}:${v.name}"
-    }) if v.create
+      index_key = "${v.project_id}/${v.region}/${v.name}"
+    }) if v.create == true
   ]
 }
 
 # Serverless VPC Access Connectors
 resource "google_vpc_access_connector" "default" {
-  for_each      = { for k, v in local.vpc_access_connectors : v.key => v }
+  for_each      = { for k, v in local.vpc_access_connectors : v.index_key => v }
   project       = var.project_id
   name          = each.value.name
   network       = each.value.network

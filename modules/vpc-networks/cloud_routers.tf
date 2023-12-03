@@ -1,5 +1,5 @@
 locals {
-  cloud_routers_0 = flatten([for n in local.vpc_networks :
+  _cloud_routers = flatten([for n in local.vpc_networks :
     [for i, v in coalesce(n.cloud_routers, []) :
       {
         create                 = coalesce(v.create, true)
@@ -7,7 +7,7 @@ locals {
         name                   = coalesce(v.name, "rtr-${i}")
         description            = coalesce(v.description, "Managed by Terraform")
         region                 = coalesce(v.region, var.region)
-        network                = n.name #google_compute_network.default[n.key].name
+        network                = n.name
         bgp_asn                = coalesce(v.bgp_asn, 64512)
         bgp_keepalive_interval = coalesce(v.bgp_keepalive_interval, 20)
         advertise_mode         = length(coalesce(v.advertised_ip_ranges, [])) > 0 ? "CUSTOM" : "DEFAULT"
@@ -16,16 +16,16 @@ locals {
       }
     ]
   ])
-  cloud_routers = [for i, v in local.cloud_routers_0 :
+  cloud_routers = [for i, v in local._cloud_routers :
     merge(v, {
-      key = "${v.project_id}:${v.region}:${v.name}"
-    }) if v.create
+      index_key = "${v.project_id}/${v.region}/${v.name}"
+    }) if v.create == true
   ]
 }
 
 # Cloud Routers
 resource "google_compute_router" "default" {
-  for_each    = { for k, v in local.cloud_routers : v.key => v }
+  for_each    = { for k, v in local.cloud_routers : v.index_key => v }
   project     = each.value.project_id
   name        = each.value.name
   description = each.value.description

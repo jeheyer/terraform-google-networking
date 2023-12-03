@@ -1,32 +1,32 @@
 locals {
-  routes_0 = flatten([for n in local.vpc_networks :
+  _routes = flatten([for n in local.vpc_networks :
     [for i, v in coalesce(n.routes, []) :
       merge(v, {
         create        = coalesce(v.create, true)
         project_id    = coalesce(v.project_id, n.project_id, var.project_id)
         name          = replace(coalesce(v.name, "route-${i}"), "_", "-")
         next_hop_type = can(regex("^[1-2]", v.next_hop)) ? "ip" : "instance"
-        network       = n.name #google_compute_network.default[n.key].name
+        network       = n.name
         dest_range    = v.dest_range
         dest_ranges   = coalesce(v.dest_ranges, [])
       })
     ]
   ])
   routes = flatten(concat(
-    [for r in local.routes_0 :
+    [for r in local._routes :
       # Routes that have more than one destination range
       [for i, dest_range in r.dest_ranges :
         merge(r, {
           name       = "${r.name}-${i}"
-          key        = "${r.project_id}:${r.name}:${i}"
+          index_key  = "${r.project_id}/${r.name}/${i}"
           dest_range = dest_range
         })
       ]
     ],
     # Routes with a single destination range
-    [for r in local.routes_0 :
+    [for r in local._routes :
       merge(r, {
-        key = "${r.project_id}:${r.name}"
+        index_key = "${r.project_id}/${r.name}"
       }) if r.dest_range != null
     ]
   ))
@@ -34,7 +34,7 @@ locals {
 
 # Static Routes
 resource "google_compute_route" "default" {
-  for_each               = { for i, v in local.routes : v.key => v }
+  for_each               = { for i, v in local.routes : v.index_key => v }
   project                = var.project_id
   name                   = each.value.name
   description            = each.value.description

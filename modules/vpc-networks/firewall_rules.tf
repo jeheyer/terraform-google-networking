@@ -83,14 +83,14 @@ locals {
       # If no IP ranges, use 169.254.169.254 since allowing 0.0.0.0/0 may not be intended
       source_ranges      = v.direction == "INGRESS" && v.source_tags == null && v.source_service_accounts == null ? coalescelist(v.source_ranges, ["169.254.169.254"]) : null
       destination_ranges = v.direction == "EGRESS" ? coalescelist(v.destination_ranges, ["169.254.169.254"]) : null
-      key                = "${v.project_id}:${v.name}"
-    }) if v.create
+      index_key          = "${v.project_id}/${v.name}"
+    }) if v.create == true
   ]
 }
 
 
 resource "google_compute_firewall" "default" {
-  for_each                = { for i, v in local.firewall_rules : v.key => v }
+  for_each                = { for i, v in local.firewall_rules : v.index_key => v }
   project                 = each.value.project_id
   name                    = each.value.name
   description             = each.value.description
