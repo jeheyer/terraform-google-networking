@@ -10,6 +10,8 @@ locals {
       disk_size_gb       = coalesce(v.disk_size, 20)
       labels             = { for k, v in coalesce(v.labels, {}) : k => lower(replace(v, " ", "_")) }
       scopes             = coalescelist(v.service_account_scopes, ["cloud-platform"])
+            os_project                = coalesce(v.os_project, local.os_project)
+      os                        = coalesce(v.os, local.os)
     })
   ]
   instance_templates = [for i, v in local._instance_templates :

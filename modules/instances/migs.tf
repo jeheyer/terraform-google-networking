@@ -30,7 +30,9 @@ locals {
           id = coalesce(hc.id, hc.name != null ? "${v.hc_prefix}/healthChecks/${hc.name}" : null)
         }
       ]
-      key = "${v.project_id}:${v.region}:${v.name}"
+      max_unavailable_fixed = length(v.zones)
+      max_surge_fixed       = length(v.zones)
+      key                   = "${v.project_id}:${v.region}:${v.name}"
     }) if v.create
   ]
 }
@@ -63,8 +65,8 @@ resource "google_compute_region_instance_group_manager" "default" {
     minimal_action                 = each.value.update_minimal_action
     most_disruptive_allowed_action = each.value.update_most_disruptive_action
     replacement_method             = each.value.update_replacement_method
-    max_unavailable_fixed          = length(each.value.zones)
-    max_surge_fixed                = length(each.value.zones)
+    max_unavailable_fixed          = each.value.max_unavailable_fixed
+    max_surge_fixed                = each.value.max_surge_fixed
   }
   lifecycle {
     create_before_destroy = true
