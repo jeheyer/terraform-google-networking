@@ -1,6 +1,6 @@
 locals {
-  dns_policies_0 = [for i, v in var.dns_policies : merge(v,
-    {
+  _dns_policies = [for i, v in var.dns_policies :
+    merge(v, {
       project_id                = coalesce(v.project_id, var.project_id)
       name                      = coalesce(v.name, "dns-policy-${i}")
       description               = coalesce(v.description, "Managed by Terraform")
@@ -9,13 +9,13 @@ locals {
       networks                  = coalesce(v.networks, [])
       logging                   = coalesce(v.logging, false)
       create                    = coalesce(v.create, true)
-    }
-  )]
-  dns_policies = [for i, v in local.dns_policies_0 : merge(v,
-    {
+    })
+  ]
+  dns_policies = [for i, v in local._dns_policies :
+    merge(v, {
       index_key = coalesce(v.index_key, "${v.project_id}/${v.name}")
-    }
-  )]
+    })
+  ]
 }
 
 # DNS Server Policies

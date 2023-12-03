@@ -1,6 +1,7 @@
 locals {
-  dns_zones_0 = [for i, v in var.dns_zones : merge(v,
-    {
+  _dns_zones = [for i, v in var.dns_zones :
+    merge(v, {
+      create              = coalesce(v.create, true)
       project_id          = coalesce(v.project_id, var.project_id)
       description         = coalesce(v.description, "Managed by Terraform")
       dns_name            = endswith(v.dns_name, ".") ? v.dns_name : "${v.dns_name}."
@@ -11,22 +12,21 @@ locals {
       visibility          = lower(coalesce(v.visibility, "public"))
       records             = coalesce(v.records, [])
       force_destroy       = coalesce(v.force_destroy, false)
-      create              = coalesce(v.create, true)
-    }
-  )]
-  dns_zones_1 = [for i, v in local.dns_zones_0 : merge(v,
-    {
+    })
+  ]
+  __dns_zones = [for i, v in local._dns_zones :
+    merge(v, {
       name       = lower(coalesce(v.name, trimsuffix(replace(v.dns_name, ".", "-"), "-")))
       visibility = length(v.visible_networks) > 0 ? "private" : v.visibility
-    }
-  )]
-  dns_zones = [for i, v in local.dns_zones_1 : merge(v,
-    {
+    })
+  ]
+  dns_zones = [for i, v in local.__dns_zones :
+    merge(v, {
       is_private = v.visibility == "private" ? true : false
       is_public  = v.visibility == "public" ? true : false
       index_key  = "${v.project_id}/${v.name}"
-    }
-  )]
+    }) if v.create == true
+  ]
 }
 
 # DNS Zones

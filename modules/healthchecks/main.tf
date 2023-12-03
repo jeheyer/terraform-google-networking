@@ -36,14 +36,14 @@ locals {
   ]
   healthchecks = [for i, v in local.__healthchecks :
     merge(v, {
-      key = v.is_regional ? "${v.project_id}:${v.region}:${v.name}" : "${v.project_id}:${v.name}"
+      index_key = v.is_regional ? "${v.project_id}/${v.region}/${v.name}" : "${v.project_id}/${v.name}"
     }) if v.create == true
   ]
 }
 
 # Regional Health Checks
 resource "google_compute_region_health_check" "default" {
-  for_each    = { for i, v in local.healthchecks : v.key => v if v.is_regional && !v.is_legacy }
+  for_each    = { for i, v in local.healthchecks : v.index_key => v if v.is_regional && !v.is_legacy }
   project     = each.value.project_id
   name        = each.value.name
   description = each.value.description
@@ -93,7 +93,7 @@ resource "google_compute_region_health_check" "default" {
 
 # Global Health Checks
 resource "google_compute_health_check" "default" {
-  for_each    = { for i, v in local.healthchecks : v.key => v if !v.is_regional && !v.is_legacy }
+  for_each    = { for i, v in local.healthchecks : v.index_key => v if !v.is_regional && !v.is_legacy }
   project     = each.value.project_id
   name        = each.value.name
   description = each.value.description
@@ -143,7 +143,7 @@ resource "google_compute_health_check" "default" {
 
 # Legacy HTTP Health Check
 resource "google_compute_http_health_check" "default" {
-  for_each           = { for i, v in local.healthchecks : v.key => v if v.is_legacy && v.is_http }
+  for_each           = { for i, v in local.healthchecks : v.index_key => v if v.is_legacy && v.is_http }
   project            = each.value.project_id
   name               = each.value.name
   description        = each.value.description
@@ -154,7 +154,7 @@ resource "google_compute_http_health_check" "default" {
 
 # Legacy HTTPS Health Check
 resource "google_compute_https_health_check" "default" {
-  for_each           = { for i, v in local.healthchecks : v.key => v if v.is_legacy && v.is_https }
+  for_each           = { for i, v in local.healthchecks : v.index_key => v if v.is_legacy && v.is_https }
   project            = each.value.project_id
   name               = each.value.name
   description        = each.value.description
