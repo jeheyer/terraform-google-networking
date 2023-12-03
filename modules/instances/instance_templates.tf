@@ -1,21 +1,21 @@
 locals {
   _instance_templates = [for i, v in var.instance_templates :
     merge(v, {
-      create             = coalesce(v.create, true)
-      project_id         = coalesce(v.project_id, v.project_id)
-      network_project_id = coalesce(v.network_project_id, var.network_project_id, v.project_id, var.project_id)
-      name_prefix        = lower(trimspace(coalesce(v.name_prefix, "template-${i + 1}")))
-      network            = coalesce(v.network_name, v.network, "default")
-      can_ip_forward     = coalesce(v.can_ip_forward, false)
-      disk_boot          = coalesce(v.disk_boot, true)
-      disk_auto_delete   = coalesce(v.disk_auto_delete, true)
-      disk_type          = coalesce(v.disk_type, "pd-standard")
-      disk_size_gb       = coalesce(v.disk_size, 20)
-      os_project         = coalesce(v.os_project, local.os_project)
-      os                 = coalesce(v.os, local.os)
-      machine_type       = coalesce(v.machine_type, local.machine_type)
-      labels             = { for k, v in coalesce(v.labels, {}) : k => lower(replace(v, " ", "_")) }
-      service_account_scopes             = coalescelist(v.service_account_scopes, ["cloud-platform"])
+      create                 = coalesce(v.create, true)
+      project_id             = coalesce(v.project_id, v.project_id)
+      network_project_id     = coalesce(v.network_project_id, var.network_project_id, v.project_id, var.project_id)
+      name_prefix            = lower(trimspace(coalesce(v.name_prefix, "template-${i + 1}")))
+      network                = coalesce(v.network_name, v.network, "default")
+      can_ip_forward         = coalesce(v.can_ip_forward, false)
+      disk_boot              = coalesce(v.disk_boot, true)
+      disk_auto_delete       = coalesce(v.disk_auto_delete, true)
+      disk_type              = coalesce(v.disk_type, "pd-standard")
+      disk_size_gb           = coalesce(v.disk_size, 20)
+      os_project             = coalesce(v.os_project, local.os_project)
+      os                     = coalesce(v.os, local.os)
+      machine_type           = coalesce(v.machine_type, local.machine_type)
+      labels                 = { for k, v in coalesce(v.labels, {}) : k => lower(replace(v, " ", "_")) }
+      service_account_scopes = coalescelist(v.service_account_scopes, ["cloud-platform"])
     })
   ]
   instance_templates = [for i, v in local._instance_templates :

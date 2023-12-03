@@ -16,6 +16,6 @@ locals {
 }
 data "google_compute_zones" "available" {
   for_each = local.regions
-  #project = each.value.project_id
+  project = var.project_id
   region = each.value
 }
