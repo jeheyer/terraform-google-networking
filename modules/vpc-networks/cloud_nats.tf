@@ -1,13 +1,13 @@
 # Allocate Static IP for each Cloud NAT, if required
 locals {
   cloud_router_names = { for i, v in local.cloud_routers : v.name => v.name }
-  _cloud_nats = flatten([for n in local.vpc_networks :
-    [for i, v in coalesce(n.cloud_nats, []) :
+  _cloud_nats = flatten([for vpc_network in local.vpc_networks :
+    [for i, v in coalesce(vpc_network.cloud_nats, []) :
       merge(v, {
         create                 = coalesce(v.create, true)
-        project_id             = coalesce(v.project_id, n.project_id, var.project_id)
+        project_id             = coalesce(v.project_id, vpc_network.project_id, var.project_id)
         name                   = coalesce(v.name, "cloud-nat-${i}")
-        network                = n.name
+        network                = vpc_network.name
         region                 = coalesce(v.region, var.region)
         router                 = coalesce(v.cloud_router_name, try(local.cloud_router_names[v.cloud_router], null), v.name)
         num_static_ips         = coalesce(v.num_static_ips, 0)

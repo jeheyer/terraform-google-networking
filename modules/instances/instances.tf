@@ -16,6 +16,7 @@ locals {
       labels                    = { for k, v in coalesce(v.labels, {}) : k => lower(replace(v, " ", "_")) }
       delete_protection         = coalesce(v.delete_protection, false)
       allow_stopping_for_update = coalesce(v.allow_stopping_for_update, true)
+      create_umig               = coalesce(v.create_umig, false)
     })
   ]
   __instances = [for i, v in local._instances :

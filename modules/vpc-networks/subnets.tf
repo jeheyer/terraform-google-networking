@@ -1,11 +1,11 @@
 locals {
-  _subnets = flatten([for n in local.vpc_networks :
-    [for i, v in coalesce(n.subnets, []) :
+  _subnets = flatten([for vpc_network in local.vpc_networks :
+    [for i, v in coalesce(vpc_network.subnets, []) :
       merge(v, {
         create               = coalesce(v.create, true)
-        project_id           = coalesce(v.project_id, n.project_id, var.project_id)
+        project_id           = coalesce(v.project_id, vpc_network.project_id, var.project_id)
         name                 = coalesce(v.name, "subnet-${i}")
-        network              = google_compute_network.default[n.index_key].name
+        network              = google_compute_network.default[vpc_network.index_key].name
         purpose              = upper(coalesce(v.purpose, "PRIVATE"))
         region               = coalesce(v.region, var.region)
         private_access       = coalesce(v.private_access, var.defaults.subnet_private_access, false)
@@ -14,8 +14,8 @@ locals {
         log_metadata         = "INCLUDE_ALL_METADATA"
         flow_logs            = coalesce(v.flow_logs, var.defaults.subnet_flow_logs, false)
         stack_type           = upper(coalesce(v.stack_type, var.defaults.subnet_stack_type, "IPV4_ONLY"))
-        attached_projects    = concat(coalesce(v.attached_projects, []), coalesce(n.attached_projects, []))
-        shared_accounts      = concat(coalesce(v.shared_accounts, []), coalesce(n.shared_accounts, []))
+        attached_projects    = concat(coalesce(v.attached_projects, []), coalesce(vpc_network.attached_projects, []))
+        shared_accounts      = concat(coalesce(v.shared_accounts, []), coalesce(vpc_network.shared_accounts, []))
         secondary_ranges = [for i, r in coalesce(v.secondary_ranges, []) :
           {
             name  = coalesce(r.name, "secondary-range-${i}")

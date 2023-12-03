@@ -22,6 +22,16 @@ output "migs" {
   ]
 }
 
+output "autoscalers" {
+  description = "Auto Scalers"
+  value = [for i, v in local.autoscalers :
+    {
+      index_key = v.index.key
+      name      = try(google_compute_region_autoscaler[v.index_key].name, null)
+    }
+  ]
+}
+
 output "umigs" {
   description = "Unmanaged Instance Groups"
   value = [for i, v in local.umigs :

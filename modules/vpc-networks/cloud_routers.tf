@@ -1,13 +1,13 @@
 locals {
-  _cloud_routers = flatten([for n in local.vpc_networks :
-    [for i, v in coalesce(n.cloud_routers, []) :
+  _cloud_routers = flatten([for vpc_network in local.vpc_networks :
+    [for i, v in coalesce(vpc_network.cloud_routers, []) :
       {
         create                 = coalesce(v.create, true)
-        project_id             = coalesce(v.project_id, n.project_id, var.project_id)
+        project_id             = coalesce(v.project_id, vpc_network.project_id, var.project_id)
         name                   = coalesce(v.name, "rtr-${i}")
         description            = coalesce(v.description, "Managed by Terraform")
         region                 = coalesce(v.region, var.region)
-        network                = n.name
+        network                = vpc_network.name
         bgp_asn                = coalesce(v.bgp_asn, 64512)
         bgp_keepalive_interval = coalesce(v.bgp_keepalive_interval, 20)
         advertise_mode         = length(coalesce(v.advertised_ip_ranges, [])) > 0 ? "CUSTOM" : "DEFAULT"

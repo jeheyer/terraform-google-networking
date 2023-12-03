@@ -10,7 +10,7 @@ locals {
         named_ports        = coalesce(v.named_ports, [])
       })
     ],
-    # Also create UMIGs for instances that have create_umig
+    # Also create UMIGs for instances that have create_umig == true
     [for i, v in local.instances :
       merge(v, {
         create             = coalesce(v.create, true)
@@ -50,4 +50,3 @@ resource "google_compute_instance_group" "default" {
   }
   depends_on = [google_compute_instance.default]
 }
-
