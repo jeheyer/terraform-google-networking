@@ -25,7 +25,7 @@ locals {
     merge(v, {
       name             = "${v.name_prefix}-${v.region}"
       hc_prefix        = "projects/${v.project_id}/${v.region != null ? "regions/${v.region}" : "global"}"
-      zones            = lookup(data.google_compute_zones.available, v.region, [for z in ["b", "c"] : "${v.region}-${z}"])
+      zones            = try(data.google_compute_zones.available[v.region].names, [for z in ["b", "c"] : "${v.region}-${z}"])
       autoscaling_mode = upper(coalesce(v.autoscaling_mode, v.min_replicas > 0 || v.max_replicas > 0 ? "ON" : "OFF"))
       is_regional      = v.region != null ? true : false
     })
