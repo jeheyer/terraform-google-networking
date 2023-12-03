@@ -5,6 +5,7 @@ locals {
       project_id         = coalesce(v.project_id, v.project_id)
       network_project_id = coalesce(v.network_project_id, var.network_project_id, v.project_id, var.project_id)
       name               = lower(trimspace(coalesce(v.name, "template-${i + 1}")))
+      name_prefix         = lower(trimspace(coalesce(v.name_prefix, "template-${i + 1}")))
       network            = coalesce(v.network_name, v.network, "default")
       can_ip_forward     = coalesce(v.can_ip_forward, false)
       disk_boot          = coalesce(v.disk_boot, true)

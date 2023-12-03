@@ -55,6 +55,7 @@ variable "instance_templates" {
     create                 = optional(bool, true)
     project_id             = optional(string)
     network_project_id     = optional(string)
+    name_prefix = optional(string)
     name                   = optional(string)
     description            = optional(string)
     region                 = string
