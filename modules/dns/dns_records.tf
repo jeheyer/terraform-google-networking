@@ -5,7 +5,7 @@ locals {
         create         = coalesce(z.create, true)
         project_id     = z.project_id
         managed_zone   = z.name
-        name           = z.name == "" ? z.dns_name : "${r.name}.${z.dns_name}"
+        name           = r.name == "" ? z.dns_name : "${r.name}.${z.dns_name}"
         type           = upper(coalesce(r.type, "A"))
         ttl            = coalesce(r.ttl, 300)
         rrdatas        = coalesce(r.rrdatas, [])
