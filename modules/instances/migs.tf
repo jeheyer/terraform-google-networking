@@ -39,6 +39,7 @@ locals {
       update_max_unavailable_fixed = length(v.zones)
       update_max_surge_fixed       = length(v.zones)
       key                          = "${v.project_id}:${v.region}:${v.name}"
+      instance_template_key        = "${v.project_id}:${v.name_prefix}"
     }) if v.create
   ]
 }
@@ -57,7 +58,7 @@ resource "google_compute_region_instance_group_manager" "default" {
   wait_for_instances               = false
   version {
     name              = each.value.version_name
-    instance_template = try(google_compute_instance_template.default[each.value.key].id, null)
+    instance_template = try(google_compute_instance_template.default[each.value.instance_template_key].id, null)
   }
   dynamic "auto_healing_policies" {
     for_each = each.value.healthchecks

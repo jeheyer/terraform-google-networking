@@ -13,11 +13,11 @@ output "migs" {
   description = "Managed Instance Groups"
   value = [for i, v in local.migs :
     {
-      key       = v.key
-      id        = try(google_compute_region_instance_group_manager.default[v.key].id, null)
-      self_link = try(google_compute_region_instance_group_manager.default[v.key].self_link, null)
-      name      = try(google_compute_region_instance_group_manager.default[v.key].name, null)
-      zone      = try(google_compute_region_instance_group_manager.default[v.key].zone, null)
+      key            = v.key
+      id             = try(google_compute_region_instance_group_manager.default[v.key].id, null)
+      self_link      = try(google_compute_region_instance_group_manager.default[v.key].self_link, null)
+      name           = try(google_compute_region_instance_group_manager.default[v.key].name, null)
+      instance_group = try(google_compute_region_instance_group_manager.default[v.key].instance_group, null)
     }
   ]
 }
