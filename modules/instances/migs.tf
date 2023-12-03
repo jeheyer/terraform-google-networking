@@ -39,7 +39,6 @@ locals {
           id = coalesce(hc.id, hc.name != null ? "${v.hc_prefix}/healthChecks/${hc.name}" : null)
         }
       ]
-      instance_template_id  = lookup(google_compute_instance_template.default).id
       max_unavailable_fixed = length(v.zones)
       max_surge_fixed       = length(v.zones)
       key                   = "${v.project_id}:${v.region}:${v.name}"
