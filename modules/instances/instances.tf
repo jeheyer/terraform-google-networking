@@ -13,6 +13,7 @@ locals {
       can_ip_forward            = coalesce(v.can_ip_forward, false)
       service_account_scopes    = coalesce(v.service_account_scopes, local.service_account_scopes)
       region                    = coalesce(v.region, var.region, local.region)
+      labels                    = { for k, v in coalesce(v.labels, {}) : k => lower(replace(v, " ", "_")) }
       delete_protection         = coalesce(v.delete_protection, false)
       allow_stopping_for_update = coalesce(v.allow_stopping_for_update, true)
     })

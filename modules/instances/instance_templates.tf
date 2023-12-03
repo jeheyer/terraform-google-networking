@@ -6,10 +6,9 @@ locals {
       network_project_id = coalesce(v.network_project_id, var.network_project_id, v.project_id, var.project_id)
       name               = lower(trimspace(coalesce(v.name, "template-${i + 1}")))
       network            = coalesce(v.network_name, v.network, "default")
-      named_ports        = coalesce(v.named_ports, [])
       disk_type          = coalesce(v.disk_type, "pd-standard")
       disk_size_gb       = coalesce(v.disk_size, 20)
-      labels             = { for k, v in v.labels : k => lower(replace(v, " ", "_")) }
+      labels             = { for k, v in coalesce(v.labels, {}) : k => lower(replace(v, " ", "_")) }
       scopes             = coalescelist(v.service_account_scopes, ["cloud-platform"])
     })
   ]
