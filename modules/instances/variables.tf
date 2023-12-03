@@ -81,6 +81,7 @@ variable "migs" {
   type = list(object({
     create                           = optional(bool, true)
     project_id                       = optional(string)
+    network_project_id               = optional(string)
     name_prefix                      = optional(string)
     base_instance_name               = optional(string)
     region                           = string
