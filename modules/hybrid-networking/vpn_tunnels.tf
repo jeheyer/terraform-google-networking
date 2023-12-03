@@ -51,15 +51,15 @@ locals {
     merge(v, {
       interface_name = coalesce(v.interface_name, "if-${v.name}")
       #peer_name      = coalesce(v.peer_name, "${v.name}-${v.peer_external_gateway_interface}")
-      key                   = "${v.project_id}:${v.region}:${v.name}"
-      cloud_vpn_gateway_key = "${v.project_id}:${v.region}:${v.cloud_vpn_gateway}"
+      index_key                   = "${v.project_id}/${v.region}/${v.name}"
+      cloud_vpn_gateway_key = "${v.project_id}/${v.region}/${v.cloud_vpn_gateway}"
     })
   ]
 }
 
 # Generate a random PSK for each tunnel, if required
 resource "random_string" "ike_psks" {
-  for_each = { for i, v in local.vpn_tunnels_2 : v.key => true if v.ike_psk == null }
+  for_each = { for i, v in local.vpn_tunnels_2 : v.index_key => true if v.ike_psk == null }
   length   = lookup(var.defaults, "vpn_ike_psk_length", 20)
   special  = false
 }
@@ -78,7 +78,7 @@ locals {
       shared_secret = coalesce(
         v.ike_psk,
         var.defaults.vpn_ike_psk,
-        try(resource.random_string.ike_psks[v.key].result, null),
+        try(resource.random_string.ike_psks[v.index_key].result, null),
         "abcdefghij0123456789"
       )
       peer_external_gateway_interface = v.peer_is_gcp ? null : v.peer_external_gateway_interface
@@ -89,11 +89,11 @@ locals {
 # Generate a null resource for each VPN tunnel, so that an existing tunnel is completely destroyed before attempting create
 # https://github.com/hashicorp/terraform-provider-google/issues/16619
 resource "null_resource" "vpn_tunnels" {
-  for_each = { for i, v in local.vpn_tunnels : v.key => true }
+  for_each = { for i, v in local.vpn_tunnels : v.index_key => true }
 }
 
 resource "google_compute_vpn_tunnel" "default" {
-  for_each                        = { for i, v in local.vpn_tunnels : v.key => v }
+  for_each                        = { for i, v in local.vpn_tunnels : v.index_key => v }
   project                         = each.value.project_id
   name                            = each.value.name
   description                     = each.value.description

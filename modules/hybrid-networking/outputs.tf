@@ -26,7 +26,7 @@ output "peer_vpn_gateways" {
 output "vpn_tunnels" {
   value = [for k, v in local.vpn_tunnels :
     {
-      index_key               = v.key
+      index_key               = v.index_key
       name                    = v.name
       cloud_router_ip_address = v.ip_range
       peer_ip_address         = v.peer_ip_address

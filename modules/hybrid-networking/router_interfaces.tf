@@ -13,14 +13,14 @@ locals {
   ]
   router_interfaces = [for i, v in local._router_interfaces :
     merge(v, {
-      key = "${v.project_id}:${v.region}:${v.router}:${v.name}"
+      index_key = "${v.project_id}/${v.region}/${v.router}/${v.name}"
     }) if v.create
   ]
 }
 
 # Cloud Router Interface
 resource "google_compute_router_interface" "default" {
-  for_each                = { for i, v in local.router_interfaces : v.key => v }
+  for_each                = { for i, v in local.router_interfaces : v.index_key => v }
   project                 = each.value.project_id
   name                    = each.value.name
   region                  = each.value.region

@@ -23,13 +23,13 @@ locals {
   ]
   router_peers = [for i, v in local._router_peers :
     merge(v, {
-      key = "${v.project_id}:${v.region}:${v.router}:${v.name}"
+      index_key = "${v.project_id}/${v.region}/${v.router}/${v.name}"
     }) if v.create
   ]
 }
 
 resource "google_compute_router_peer" "default" {
-  for_each                  = { for i, v in local.router_peers : v.key => v }
+  for_each                  = { for i, v in local.router_peers : v.index_key => v }
   project                   = each.value.project_id
   name                      = each.value.name
   region                    = each.value.region
