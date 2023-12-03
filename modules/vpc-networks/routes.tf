@@ -4,7 +4,7 @@ locals {
       merge(v, {
         create        = coalesce(v.create, true)
         project_id    = coalesce(v.project_id, vpc_network.project_id, var.project_id)
-        name          = replace(coalesce(v.name, "route-${i}"), "_", "-")
+        name          = lower(trimspace(replace(coalesce(v.name, "route-${i}"), "_", "-")))
         next_hop_type = can(regex("^[1-2]", v.next_hop)) ? "ip" : "instance"
         network       = vpc_network.name
         dest_range    = v.dest_range
@@ -15,11 +15,11 @@ locals {
   routes = flatten(concat(
     [for route in local._routes :
       # Routes that have more than one destination range
-      [for i, v in route.dest_ranges :
-        merge(v, {
+      [for i, dest_range in route.dest_ranges :
+        merge(route, {
           name       = "${route.name}-${i}"
           index_key  = "${route.project_id}/${route.name}/${i}"
-          dest_range = v
+          dest_range = dest_range
         })
       ]
     ],
