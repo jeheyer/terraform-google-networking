@@ -12,6 +12,7 @@ locals {
       cooldown_period       = coalesce(v.cooldown_period, 60)
       cpu_target            = coalesce(v.cpu_target, 0.60)
       cpu_predictive_method = coalesce(v.cpu_predictive_method, "NONE")
+      is.regional           = v.is_regional
     } if v.autoscaling_mode != "OFF"
   ]
 }
