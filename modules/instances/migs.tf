@@ -9,8 +9,8 @@ locals {
       region                         = coalesce(v.region, var.region)
       distribution_target_shape      = upper(coalesce(v.distribution_policy_target_shape, "EVEN"))
       update_type                    = upper(coalesce(v.update_type, "OPPORTUNISTIC"))
-      instance_redistribution_type   = upper(coalesce(v.instance_redistribution_type, "PROACTIVE"))
-      update_minimal_action                 = upper(coalesce(v.update_minimal_action, "RESTART"))
+      update_instance_redistribution_type   = upper(coalesce(v.update_instance_redistribution_type, "PROACTIVE"))
+      update_minimal_action          = upper(coalesce(v.update_minimal_action, "RESTART"))
       most_disruptive_allowed_action = upper(coalesce(v.update_most_disruptive_action, "REPLACE"))
       replacement_method             = upper(coalesce(v.update_replacement_method, "SUBSTITUTE"))
       initial_delay_sec              = coalesce(v.auto_healing_initial_delay, 300)
@@ -41,7 +41,7 @@ locals {
       ]
       update_max_unavailable_fixed = length(v.zones)
       update_max_surge_fixed       = length(v.zones)
-      key                   = "${v.project_id}:${v.region}:${v.name}"
+      key                          = "${v.project_id}:${v.region}:${v.name}"
     }) if v.create
   ]
 }
