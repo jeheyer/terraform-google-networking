@@ -36,6 +36,7 @@ variable "instances" {
     service_account_email  = optional(string)
     service_account_scopes = optional(list(string))
     network_tags           = optional(list(string))
+    labels                 = optional(map(string))
     can_ip_forward         = optional(bool)
     delete_protection      = optional(bool)
     nat_ip_addresses       = optional(list(string))
@@ -71,6 +72,7 @@ variable "instance_templates" {
     service_account_email  = optional(string)
     service_account_scopes = optional(list(string))
     network_tags           = optional(list(string))
+    labels                 = optional(map(string))
     can_ip_forward         = optional(bool)
   }))
   default = []
