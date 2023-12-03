@@ -38,8 +38,8 @@ locals {
       ]
       update_max_unavailable_fixed = length(v.zones)
       update_max_surge_fixed       = length(v.zones)
-      key                          = "${v.project_id}:${v.region}:${v.name}"
-      instance_template_key        = "${v.project_id}:${v.name_prefix}"
+      index_key                    = "${v.project_id}/${v.region}/${v.name}"
+      instance_template_key        = "${v.project_id}/${v.name_prefix}"
     }) if v.create
   ]
 }
@@ -47,7 +47,7 @@ locals {
 
 # Regional Managed Instance Groups
 resource "google_compute_region_instance_group_manager" "default" {
-  for_each                         = { for i, v in local.migs : v.key => v if v.is_regional }
+  for_each                         = { for i, v in local.migs : v.index_key => v if v.is_regional }
   project                          = each.value.project_id
   base_instance_name               = each.value.base_instance_name
   name                             = each.value.name

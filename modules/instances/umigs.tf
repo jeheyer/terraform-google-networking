@@ -27,14 +27,14 @@ locals {
     merge(v, {
       network      = "https://www.googleapis.com/compute/v1/projects/${v.network_project_id}/global/networks/${v.network}"
       zones_prefix = "projects/${v.project_id}/zones/${v.zone}"
-      key          = "${v.project_id}:${v.zone}:${v.name}"
+      index_key    = "${v.project_id}/${v.zone}/${v.name}"
     }) if v.create == true
   ]
 }
 
 # Unmanaged Instance Groups
 resource "google_compute_instance_group" "default" {
-  for_each  = { for i, v in local.umigs : v.key => v }
+  for_each  = { for i, v in local.umigs : v.index_key => v }
   project   = each.value.project_id
   name      = each.value.name
   network   = each.value.network

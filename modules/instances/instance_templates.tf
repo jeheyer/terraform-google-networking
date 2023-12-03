@@ -23,13 +23,13 @@ locals {
     merge(v, {
       network      = "projects/${v.network_project_id}/global/networks/${v.network}"
       source_image = coalesce(v.image, "${v.os_project}/${v.os}")
-      key          = "${v.project_id}:${v.name_prefix}"
+      index_key    = "${v.project_id}/${v.name_prefix}"
     }) if v.create
   ]
 }
 
 resource "google_compute_instance_template" "default" {
-  for_each                = { for i, v in local.instance_templates : v.key => v }
+  for_each                = { for i, v in local.instance_templates : v.index_key => v }
   project                 = each.value.project_id
   name_prefix             = each.value.name_prefix
   description             = each.value.description

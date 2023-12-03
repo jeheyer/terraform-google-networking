@@ -27,13 +27,13 @@ locals {
   ]
   instances = [for i, v in local.__instances :
     merge(v, {
-      key = "${v.project_id}:${v.zone}:${v.name}"
+      index_key = "${v.project_id}/${v.zone}/${v.name}"
     }) if v.create
   ]
 }
 
 resource "google_compute_instance" "default" {
-  for_each            = { for i, v in local.instances : v.key => v }
+  for_each            = { for i, v in local.instances : v.index_key => v }
   name                = each.value.name
   description         = each.value.description
   zone                = each.value.zone
