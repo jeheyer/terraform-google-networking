@@ -1,29 +1,30 @@
 locals {
-  instances_0 = [for i, v in var.instances :
+  _instances = [for i, v in var.instances :
     merge(v, {
-      create                 = coalesce(v.create, true)
-      project_id             = coalesce(v.project_id, var.project_id)
-      network_project_id     = coalesce(v.network_project_id, var.network_project_id, v.project_id, var.project_id)
-      name                   = lower(trimspace(coalesce(v.name, "instance-${i + 1}")))
-      network_name           = coalesce(v.network_name, "default")
-      subnet_name            = coalesce(v.subnet_name, "default")
-      os_project             = coalesce(v.os_project, local.os_project)
-      os                     = coalesce(v.os, local.os)
-      machine_type           = coalesce(v.machine_type, local.machine_type)
-      can_ip_forward         = coalesce(v.can_ip_forward, false)
-      service_account_scopes = coalesce(v.service_account_scopes, local.service_account_scopes)
-      region                 = coalesce(v.region, var.region, local.region)
-      delete_protection      = coalesce(v.delete_protection, false)
+      create                    = coalesce(v.create, true)
+      project_id                = coalesce(v.project_id, var.project_id)
+      network_project_id        = coalesce(v.network_project_id, var.network_project_id, v.project_id, var.project_id)
+      name                      = lower(trimspace(coalesce(v.name, "instance-${i + 1}")))
+      network_name              = coalesce(v.network_name, "default")
+      subnet_name               = coalesce(v.subnet_name, "default")
+      os_project                = coalesce(v.os_project, local.os_project)
+      os                        = coalesce(v.os, local.os)
+      machine_type              = coalesce(v.machine_type, local.machine_type)
+      can_ip_forward            = coalesce(v.can_ip_forward, false)
+      service_account_scopes    = coalesce(v.service_account_scopes, local.service_account_scopes)
+      region                    = coalesce(v.region, var.region, local.region)
+      delete_protection         = coalesce(v.delete_protection, false)
+      allow_stopping_for_update = coalesce(v.allow_stopping_for_update, true)
     })
   ]
-  instances_1 = [for i, v in local.instances_0 :
+  __instances = [for i, v in local._instances :
     merge(v, {
       image     = coalesce(v.image, "${v.os_project}/${v.os}")
       zone      = coalesce(v.zone, "${v.region}-${element(local.zones, i)}")
       subnet_id = "projects/${v.network_project_id}/regions/${v.region}/subnetworks/${v.subnet_name}"
     }) if v.create
   ]
-  instances = [for i, v in local.instances_1 :
+  instances = [for i, v in local.__instances :
     merge(v, {
       key = "${v.project_id}:${v.zone}:${v.name}"
     }) if v.create
@@ -77,6 +78,6 @@ resource "google_compute_instance" "default" {
     email  = each.value.service_account_email
     scopes = each.value.service_account_scopes
   }
-  allow_stopping_for_update = true
+  allow_stopping_for_update = each.value.allow_stopping_for_update
 }
 

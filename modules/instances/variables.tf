@@ -41,7 +41,7 @@ variable "instances" {
     nat_ip_addresses       = optional(list(string))
     nat_ip_names           = optional(list(string))
     ssh_key                = optional(string)
-    create_instance_groups = optional(bool)
+    create_umig            = optional(bool)
     public_zone            = optional(string)
     private_zone           = optional(string)
   }))
