@@ -13,14 +13,14 @@ locals {
   )]
   dns_policies = [for i, v in local.dns_policies_0 : merge(v,
     {
-      key = coalesce(v.key, "${v.project_id}:${v.name}")
+      index_key = coalesce(v.index_key, "${v.project_id}/${v.name}")
     }
   )]
 }
 
 # DNS Server Policies
 resource "google_dns_policy" "default" {
-  for_each                  = { for k, v in local.dns_policies : v.key => v if v.create }
+  for_each                  = { for k, v in local.dns_policies : v.index_key => v if v.create }
   project                   = each.value.project_id
   name                      = each.value.name
   description               = each.value.description

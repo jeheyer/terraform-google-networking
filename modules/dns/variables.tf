@@ -8,7 +8,7 @@ variable "dns_zones" {
   type = list(object({
     create            = optional(bool, true)
     project_id        = optional(string)
-    key               = optional(string)
+    index_key         = optional(string)
     dns_name          = string
     name              = optional(string)
     description       = optional(string)
@@ -23,12 +23,12 @@ variable "dns_zones" {
       forwarding_path = optional(string)
     })))
     records = optional(list(object({
-      create  = optional(bool, true)
-      key     = optional(string)
-      name    = string
-      type    = optional(string)
-      ttl     = optional(number)
-      rrdatas = list(string)
+      create    = optional(bool, true)
+      index_key = optional(string)
+      name      = string
+      type      = optional(string)
+      ttl       = optional(number)
+      rrdatas   = list(string)
     })))
   }))
   default = []
@@ -38,7 +38,7 @@ variable "dns_policies" {
   type = list(object({
     create                    = optional(bool, true)
     project_id                = optional(string)
-    key                       = optional(string)
+    index_key                 = optional(string)
     name                      = optional(string)
     description               = optional(string)
     logging                   = optional(bool)
