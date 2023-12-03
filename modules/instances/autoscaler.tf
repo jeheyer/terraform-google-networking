@@ -6,13 +6,14 @@ locals {
       name                  = v.name_prefix
       region                = v.region
       target                = try(google_compute_region_instance_group_manager.default[v.key].self_link, null)
-      min_replicas          = v.min_replicas != 0 ? coalesce(v.min_replicas, 1) : null
-      max_replicas          = v.max_replicas != 0 ? coalesce(v.max_replicas, 10) : null
       mode                  = v.autoscaling_mode
+      min_replicas          = v.autoscaling_mode != "OFF" ? coalesce(v.min_replicas, 1) : 0
+      max_replicas          = v.autoscaling_mode != "OFF" ? coalesce(v.max_replicas, 10) : 0
       cooldown_period       = coalesce(v.cooldown_period, 60)
       cpu_target            = coalesce(v.cpu_target, 0.60)
       cpu_predictive_method = coalesce(v.cpu_predictive_method, "NONE")
       is_regional           = v.is_regional
+      key                   = v.key
     } if v.autoscaling_mode != "OFF"
   ]
 }
