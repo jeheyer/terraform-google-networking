@@ -15,6 +15,7 @@ output "umigs" {
     {
       key  = v.key
       id   = try(google_compute_instance_group.default[v.key].id, null)
+      self_link   = try(google_compute_instance_group.default[v.key].self_link, null)
       name = try(google_compute_instance_group.default[v.key].name, null)
       zone = try(google_compute_instance_group.default[v.key].zone, null)
     }
