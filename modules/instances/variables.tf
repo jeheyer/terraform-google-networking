@@ -107,6 +107,7 @@ variable "migs" {
     max_replicas          = optional(number)
     cpu_target            = optional(number)
     cpu_predictive_method = optional(string)
+    cooldown_period       = optional(number)
   }))
   default = []
 }
