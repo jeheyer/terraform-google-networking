@@ -86,7 +86,7 @@ locals {
       nat_ip_allocate_option = length(v.static_ips) > 0 || v.num_static_ips > 0 ? "MANUAL_ONLY" : "AUTO_ONLY"
     })
   ]
-  cloud_nats = [for i, v in local.__cloud_nats :
+  cloud_nats = [for i, v in local.___cloud_nats :
     merge(v, {
       logging                 = v.log_type == "none" ? false : true
       log_filter              = lookup(local.log_filter, v.log_type, "ERRORS_ONLY")
