@@ -102,6 +102,10 @@ variable "migs" {
       id   = optional(string)
       name = optional(string)
     }))
+    min_replicas          = optional(number)
+    max_replicas          = optional(number)
+    cpu_target            = optional(number)
+    cpu_predictive_method = optional(string)
   }))
   default = []
 }

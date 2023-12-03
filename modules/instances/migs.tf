@@ -1,5 +1,3 @@
-
-
 locals {
   _migs = [
     for i, v in var.migs :
@@ -9,28 +7,26 @@ locals {
       network_project_id             = coalesce(v.network_project_id, var.network_project_id, v.project_id, var.project_id)
       base_instance_name             = coalesce(v.base_instance_name, v.name_prefix)
       region                         = coalesce(v.region, var.region)
-      distribution_target_shape      = upper(coalesce(v.distribution_policy_target_shape, "even"))
-      type                           = upper(coalesce(v.update_type, "opportunistic"))
-      instance_redistribution_type   = upper(coalesce(v.instance_redistribution_type, "proactive"))
-      minimal_action                 = upper(coalesce(v.update_minimal_action, "restart"))
-      most_disruptive_allowed_action = upper(coalesce(v.update_most_disruptive_action, "replace"))
-      replacement_method             = upper(coalesce(v.update_replacement_method, "substitute"))
+      distribution_target_shape      = upper(coalesce(v.distribution_policy_target_shape, "EVEN"))
+      type                           = upper(coalesce(v.update_type, "OPPORTUNISTIC"))
+      instance_redistribution_type   = upper(coalesce(v.instance_redistribution_type, "PROACTIVE"))
+      minimal_action                 = upper(coalesce(v.update_minimal_action, "RESTART"))
+      most_disruptive_allowed_action = upper(coalesce(v.update_most_disruptive_action, "REPLACE"))
+      replacement_method             = upper(coalesce(v.update_replacement_method, "SUBSTITUTE"))
       initial_delay_sec              = coalesce(v.auto_healing_initial_delay, 300)
-       min_replicas     = coalesce(v.min_replicas, 0)
-       max_replicas = coalesce(v.max_replicas, 0)
+      min_replicas                   = coalesce(v.min_replicas, 0)
+      max_replicas                   = coalesce(v.max_replicas, 0)
     })
   ]
 }
 
-
-
 locals {
   __migs = [for i, v in local._migs :
     merge(v, {
-      name      = "${v.name_prefix}-${v.region}"
-      hc_prefix = "projects/${v.project_id}/${v.region != null ? "regions/${v.region}" : "global"}"
-      zones     = lookup(data.google_compute_zones.available, v.region, [for z in ["b", "c"] : "${v.region}-${z}"])
-      autoscaling     = v.min_replicas > 0 || v.max_replicas > 0 ? true : false
+      name             = "${v.name_prefix}-${v.region}"
+      hc_prefix        = "projects/${v.project_id}/${v.region != null ? "regions/${v.region}" : "global"}"
+      zones            = lookup(data.google_compute_zones.available, v.region, [for z in ["b", "c"] : "${v.region}-${z}"])
+      autoscaling_mode = upper(coalesce(v.autoscaling_mode, v.min_replicas > 0 || v.max_replicas > 0 ? "ON" : "OFF"))
     })
   ]
   migs = [for i, v in local.__migs :
