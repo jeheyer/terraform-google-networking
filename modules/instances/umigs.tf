@@ -24,7 +24,7 @@ locals {
   ))
   umigs = [for i, v in local._umigs :
     merge(v, {
-      network      = "projects/${v.network_project_id}/global/networks/${v.network}"
+      network      = "https://www.googleapis.com/compute/v1/projects/${v.network_project_id}/global/networks/${v.network}"
       zones_prefix = "projects/${v.project_id}/zones/${v.zone}"
       key          = "${v.project_id}:${v.zone}:${v.name}"
     }) if v.create
