@@ -1,33 +1,33 @@
 locals {
-  _routes = flatten([for n in local.vpc_networks :
-    [for i, v in coalesce(n.routes, []) :
+  _routes = flatten([for vpc_network in local.vpc_networks :
+    [for i, v in coalesce(vpc_network.routes, []) :
       merge(v, {
         create        = coalesce(v.create, true)
-        project_id    = coalesce(v.project_id, n.project_id, var.project_id)
+        project_id    = coalesce(v.project_id, vpc_network.project_id, var.project_id)
         name          = replace(coalesce(v.name, "route-${i}"), "_", "-")
         next_hop_type = can(regex("^[1-2]", v.next_hop)) ? "ip" : "instance"
-        network       = n.name
+        network       = vpc_network.name
         dest_range    = v.dest_range
         dest_ranges   = coalesce(v.dest_ranges, [])
       })
     ]
   ])
   routes = flatten(concat(
-    [for r in local._routes :
+    [for route in local._routes :
       # Routes that have more than one destination range
-      [for i, dest_range in r.dest_ranges :
-        merge(r, {
-          name       = "${r.name}-${i}"
-          index_key  = "${r.project_id}/${r.name}/${i}"
-          dest_range = dest_range
+      [for i, v in route.dest_ranges :
+        merge(v, {
+          name       = "${route.name}-${i}"
+          index_key  = "${route.project_id}/${route.name}/${i}"
+          dest_range = v
         })
       ]
     ],
     # Routes with a single destination range
-    [for r in local._routes :
-      merge(r, {
+    [for i, v in local._routes :
+      merge(v, {
         index_key = "${r.project_id}/${r.name}"
-      }) if r.dest_range != null
+      }) if v.dest_range != null
     ]
   ))
 }

@@ -1,9 +1,9 @@
 locals {
-  _ip_ranges = flatten([for n in local.vpc_networks :
-    [for i, v in coalesce(n.ip_ranges, []) :
+  _ip_ranges = flatten([for vpc_network in local.vpc_networks :
+    [for i, v in coalesce(vpc_network.ip_ranges, []) :
       {
         create        = coalesce(v.create, true)
-        project_id    = coalesce(v.project_id, n.project_id, var.project_id)
+        project_id    = coalesce(v.project_id, vpc_network.project_id, var.project_id)
         name          = coalesce(v.name, "ip-range-${i}")
         description   = v.description
         ip_version    = null
@@ -11,11 +11,11 @@ locals {
         prefix_length = element(split("/", v.ip_range), 1)
         address_type  = "INTERNAL"
         purpose       = "VPC_PEERING"
-        network       = n.name
+        network       = vpc_network.name
       }
     ]
   ])
-  ip_ranges = [for v in local._ip_ranges :
+  ip_ranges = [for i, v in local._ip_ranges :
     merge(v, {
       index_key = "${v.project_id}/${v.network}/${v.name}"
     }) if v.create == true

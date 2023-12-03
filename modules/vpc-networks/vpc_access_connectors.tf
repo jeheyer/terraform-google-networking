@@ -1,13 +1,13 @@
 locals {
-  _vpc_access_connectors = flatten([for n in local.vpc_networks :
-    [for i, v in coalesce(n.vpc_access_connectors, []) :
+  _vpc_access_connectors = flatten([for vpc_network in local.vpc_networks :
+    [for i, v in coalesce(vpc_network.vpc_access_connectors, []) :
       merge(v, {
         create             = coalesce(v.create, true)
-        project_id         = coalesce(v.project_id, n.project_id, var.project_id)
-        network_project_id = coalesce(v.network_project_id, v.project_id, n.project_id, var.project_id)
+        project_id         = coalesce(v.project_id, vpc_network.project_id, var.project_id)
+        network_project_id = coalesce(v.network_project_id, v.project_id, vpc_network.project_id, var.project_id)
         name               = coalesce(v.name, "connector-${i}")
         region             = coalesce(v.region, var.region)
-        network            = v.subnet_name == null ? n.name : null
+        network            = v.subnet_name == null ? vpc_network.name : null
         min_throughput     = coalesce(v.min_throughput, 200)
         max_throughput     = coalesce(v.max_throughput, 1000)
         min_instances      = coalesce(v.min_instances, 2)

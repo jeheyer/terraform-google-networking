@@ -1,13 +1,13 @@
 locals {
-  _peerings = flatten([for n in local.vpc_networks :
-    [for i, v in coalesce(n.peerings, []) :
+  _peerings = flatten([for vpc_network in local.vpc_networks :
+    [for i, v in coalesce(vpc_network.peerings, []) :
       merge(v, {
         create            = coalesce(v.create, true)
-        project_id        = coalesce(v.project_id, n.project_id, var.project_id)
+        project_id        = coalesce(v.project_id, vpc_network.project_id, var.project_id)
         name              = coalesce(v.name, "peering-${i}")
-        peer_project_id   = coalesce(v.peer_project_id, v.project_id, n.project_id, var.project_id)
+        peer_project_id   = coalesce(v.peer_project_id, v.project_id, vpc_network.project_id, var.project_id)
         peer_network_name = coalesce(v.peer_network_name, "default")
-        network_name      = n.name
+        network_name      = vpc_network.name
       })
     ]
   ])
