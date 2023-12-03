@@ -5,7 +5,7 @@ locals {
       project_id                = coalesce(v.project_id, var.project_id)
       network_project_id        = coalesce(v.network_project_id, var.network_project_id, v.project_id, var.project_id)
       name                      = lower(trimspace(coalesce(v.name, "instance-${i + 1}")))
-      network              = coalesce(v.network_name, "default")
+      network                   = coalesce(v.network_name, "default")
       subnet_name               = coalesce(v.subnet_name, "default")
       os_project                = coalesce(v.os_project, local.os_project)
       os                        = coalesce(v.os, local.os)
