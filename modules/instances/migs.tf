@@ -27,7 +27,7 @@ locals {
     merge(v, {
       name      = "${v.name_prefix}-${v.region}"
       hc_prefix = "projects/${v.project_id}/${v.region != null ? "regions/${v.region}" : "global"}"
-      zones     = lookup(google_compute_zones.available, v.region, [for z in ["b", "c"] : "${v.region}-${z}"])
+      zones     = lookup(data.google_compute_zones.available, v.region, [for z in ["b", "c"] : "${v.region}-${z}"])
     })
   ]
   migs = [for i, v in local.__migs :
