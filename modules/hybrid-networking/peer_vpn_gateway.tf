@@ -17,14 +17,14 @@ locals {
   peer_vpn_gateways = [for i, v in local._peer_vpn_gateways :
     merge(v, {
       redundancy_type = lookup(local.redundancy_types, length(v.ip_addresses), "TWO_IPS_REDUNDANCY")
-      key             = "${v.project_id}:${v.name}"
+      index_key       = "${v.project_id}/${v.name}"
     }) if v.create
   ]
 }
 
 # Peer (External) VPN Gateway
 resource "google_compute_external_vpn_gateway" "default" {
-  for_each        = { for k, v in local.peer_vpn_gateways : v.key => v }
+  for_each        = { for k, v in local.peer_vpn_gateways : v.index_key => v }
   project         = each.value.project_id
   name            = each.value.name
   description     = each.value.description

@@ -15,14 +15,14 @@ locals {
   ]
   cloud_vpn_gateways = [for i, v in local.__cloud_vpn_gateways :
     merge(v, {
-      key = "${v.project_id}:${v.region}:${v.name}"
+      index_key = "${v.project_id}/${v.region}/${v.name}"
     }) if v.create
   ]
 }
 
 # Cloud HA VPN Gateway
 resource "google_compute_ha_vpn_gateway" "default" {
-  for_each   = { for k, v in local.cloud_vpn_gateways : v.key => v }
+  for_each   = { for k, v in local.cloud_vpn_gateways : v.index_key => v }
   project    = each.value.project_id
   name       = each.value.name
   network    = each.value.network
