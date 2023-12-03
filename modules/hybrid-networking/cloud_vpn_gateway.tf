@@ -3,7 +3,7 @@ locals {
     merge(v, {
       create     = coalesce(v.create, true)
       project_id = lower(trimspace(coalesce(v.project_id, var.project_id)))
-      network    = lower(trimspace(coalesce(v.network_name, "default")))
+      network    = lower(trimspace(coalesce(v.network_name, v.network, "default")))
       region     = lower(trimspace(coalesce(v.region, var.region)))
       stack_type = upper(trimspace(coalesce(v.stack_type, "IPV4_ONLY")))
     })

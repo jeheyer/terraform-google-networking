@@ -19,6 +19,7 @@ variable "cloud_vpn_gateways" {
     create       = optional(bool, true)
     project_id   = optional(string)
     name         = optional(string)
+    network      = optional(string)
     network_name = optional(string)
     region       = string
     stack_type   = optional(string)

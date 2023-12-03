@@ -1,14 +1,13 @@
 locals {
-  vpn_tunnels_0 = flatten(
+  _vpn_tunnels = flatten(
     [for i, vpn in var.vpns :
       [for t, tunnel in vpn.tunnels :
         {
-          create          = coalesce(tunnel.create, true)
-          is_vpn          = true
-          is_interconnect = false
-          project_id      = coalesce(vpn.project_id, var.project_id)
-          region          = coalesce(vpn.region, var.region)
-          #router                          = coalesce(vpn.cloud_router, try(local.cloud_routers[vpn.cloud_router].name, null), "error")
+          create                          = coalesce(tunnel.create, true)
+          is_vpn                          = true
+          is_interconnect                 = false
+          project_id                      = coalesce(vpn.project_id, var.project_id)
+          region                          = coalesce(vpn.region, var.region)
           router                          = coalesce(vpn.cloud_router, "error")
           cloud_vpn_gateway               = vpn.cloud_vpn_gateway
           peer_gcp_vpn_gateway_project_id = coalesce(vpn.peer_gcp_vpn_gateway_project_id, vpn.project_id, var.project_id)
@@ -41,16 +40,15 @@ locals {
       ]
     ]
   )
-  vpn_tunnels_1 = [for i, v in local.vpn_tunnels_0 :
+  __vpn_tunnels = [for i, v in local._vpn_tunnels :
     merge(v, {
       name        = coalesce(v.tunnel_name, v.vpn_name != null ? "${v.vpn_name}-${v.tunnel_index}" : null, "vpn-${v.region}-${v.vpn_index}-${v.tunnel_index}")
       peer_is_gcp = v.peer_gcp_vpn_gateway != null ? true : false
     })
   ]
-  vpn_tunnels_2 = [for i, v in local.vpn_tunnels_1 :
+  ___vpn_tunnels = [for i, v in local.__vpn_tunnels :
     merge(v, {
-      interface_name = coalesce(v.interface_name, "if-${v.name}")
-      #peer_name      = coalesce(v.peer_name, "${v.name}-${v.peer_external_gateway_interface}")
+      interface_name        = coalesce(v.interface_name, "if-${v.name}")
       index_key             = "${v.project_id}/${v.region}/${v.name}"
       cloud_vpn_gateway_key = "${v.project_id}/${v.region}/${v.cloud_vpn_gateway}"
     })
@@ -59,14 +57,14 @@ locals {
 
 # Generate a random PSK for each tunnel, if required
 resource "random_string" "ike_psks" {
-  for_each = { for i, v in local.vpn_tunnels_2 : v.index_key => true if v.ike_psk == null }
+  for_each = { for i, v in local.___vpn_tunnels : v.index_key => true if v.ike_psk == null }
   length   = lookup(var.defaults, "vpn_ike_psk_length", 20)
   special  = false
 }
 
 locals {
   gcp_gateway_prefix = "https://www.googleapis.com/compute/v1/projects"
-  vpn_tunnels = [for i, v in local.vpn_tunnels_2 :
+  vpn_tunnels = [for i, v in local.___vpn_tunnels :
     merge(v, {
       vpn_tunnel = v.name
       vpn_gateway = coalesce(

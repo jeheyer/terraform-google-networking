@@ -2,6 +2,7 @@ locals {
   redundancy_types = {
     1 = "SINGLE_IP_INTERNALLY_REDUNDANT"
     2 = "TWO_IPS_REDUNDANCY"
+    3 = "TWO_IPS_REDUNDANCY"
     4 = "FOUR_IPS_REDUNDANCY"
   }
   _peer_vpn_gateways = [for i, v in var.peer_vpn_gateways :
@@ -18,7 +19,7 @@ locals {
     merge(v, {
       redundancy_type = lookup(local.redundancy_types, length(v.ip_addresses), "TWO_IPS_REDUNDANCY")
       index_key       = "${v.project_id}/${v.name}"
-    }) if v.create
+    }) if v.create == true
   ]
 }
 
