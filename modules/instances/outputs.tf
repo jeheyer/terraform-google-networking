@@ -27,7 +27,10 @@ output "autoscalers" {
   value = [for i, v in local.autoscalers :
     {
       index_key = v.index.key
-      name      = try(google_compute_region_autoscaler[v.index_key].name, null)
+      id        = try(google_compute_region_autoscaler.default[v.index_key].id, null)
+      name      = try(google_compute_region_autoscaler.default[v.index_key].name, null)
+      target    = try(google_compute_region_autoscaler.default[v.index_key].target, null)
+      self_link = try(google_compute_region_autoscaler.default[v.index_key].self_link, null)
     }
   ]
 }
