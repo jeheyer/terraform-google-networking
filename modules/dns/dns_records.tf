@@ -1,15 +1,15 @@
 locals {
-  _dns_records = flatten([for z in local.dns_zones :
-    [for r in z.records : {
-      create         = coalesce(z.create, true)
-      project_id     = z.project_id
-      managed_zone   = z.name
-      name           = r.name == "" ? z.dns_name : "${r.name}.${z.dns_name}"
-      type           = upper(coalesce(r.type, "A"))
-      ttl            = coalesce(r.ttl, 300)
-      rrdatas        = coalesce(r.rrdatas, [])
-      index_key      = r.index_key
-      zone_index_key = z.index_key
+  _dns_records = flatten([for dns_zone in local.dns_zones :
+    [for record in dns_zone.records : {
+      create         = coalesce(dns_zone.create, true)
+      project_id     = dns_zone.project_id
+      managed_zone   = dns_zone.name
+      name           = record.name == "" ? dns_zone.dns_name : "${record.name}.${dns_zone.dns_name}"
+      type           = upper(coalesce(record.type, "A"))
+      ttl            = coalesce(record.ttl, 300)
+      rrdatas        = coalesce(record.rrdatas, [])
+      index_key      = record.index_key
+      zone_index_key = dns_zone.index_key
     }]
   ])
   dns_records = [for i, v in local._dns_records :

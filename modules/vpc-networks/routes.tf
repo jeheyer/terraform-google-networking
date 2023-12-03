@@ -26,7 +26,7 @@ locals {
     # Routes with a single destination range
     [for i, v in local._routes :
       merge(v, {
-        index_key = "${r.project_id}/${r.name}"
+        index_key = "${v.project_id}/${v.name}"
       }) if v.dest_range != null
     ]
   ))
