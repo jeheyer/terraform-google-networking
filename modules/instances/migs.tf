@@ -39,6 +39,7 @@ locals {
           id = coalesce(hc.id, hc.name != null ? "${v.hc_prefix}/healthChecks/${hc.name}" : null)
         }
       ]
+      instance_template_id = lookup(google_compute_instance_template.default).id
       max_unavailable_fixed = length(v.zones)
       max_surge_fixed       = length(v.zones)
       key                   = "${v.project_id}:${v.region}:${v.name}"
@@ -60,7 +61,7 @@ resource "google_compute_region_instance_group_manager" "default" {
   wait_for_instances               = false
   version {
     name              = each.value.version_name
-    instance_template = each.value.instance_template_name
+    instance_template = google_compute_instance_template.default[each.value.key].id
   }
   dynamic "auto_healing_policies" {
     for_each = each.value.healthchecks
