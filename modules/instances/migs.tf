@@ -16,6 +16,8 @@ locals {
       most_disruptive_allowed_action = upper(coalesce(v.update_most_disruptive_action, "replace"))
       replacement_method             = upper(coalesce(v.update_replacement_method, "substitute"))
       initial_delay_sec              = coalesce(v.auto_healing_initial_delay, 300)
+       min_replicas     = coalesce(v.min_replicas, 0)
+       max_replicas = coalesce(v.max_replicas, 0)
     })
   ]
 }
@@ -28,6 +30,7 @@ locals {
       name      = "${v.name_prefix}-${v.region}"
       hc_prefix = "projects/${v.project_id}/${v.region != null ? "regions/${v.region}" : "global"}"
       zones     = lookup(data.google_compute_zones.available, v.region, [for z in ["b", "c"] : "${v.region}-${z}"])
+      autoscaling     = v.min_replicas > 0 || v.max_replicas > 0 ? true : false
     })
   ]
   migs = [for i, v in local.__migs :
