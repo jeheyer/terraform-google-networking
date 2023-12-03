@@ -8,9 +8,9 @@ locals {
       base_instance_name             = coalesce(v.base_instance_name, v.name_prefix)
       region                         = coalesce(v.region, var.region)
       distribution_target_shape      = upper(coalesce(v.distribution_policy_target_shape, "EVEN"))
-      type                           = upper(coalesce(v.update_type, "OPPORTUNISTIC"))
+      update_type                    = upper(coalesce(v.update_type, "OPPORTUNISTIC"))
       instance_redistribution_type   = upper(coalesce(v.instance_redistribution_type, "PROACTIVE"))
-      minimal_action                 = upper(coalesce(v.update_minimal_action, "RESTART"))
+      update_minimal_action                 = upper(coalesce(v.update_minimal_action, "RESTART"))
       most_disruptive_allowed_action = upper(coalesce(v.update_most_disruptive_action, "REPLACE"))
       replacement_method             = upper(coalesce(v.update_replacement_method, "SUBSTITUTE"))
       initial_delay_sec              = coalesce(v.auto_healing_initial_delay, 300)
@@ -39,8 +39,8 @@ locals {
           id = coalesce(hc.id, hc.name != null ? "${v.hc_prefix}/healthChecks/${hc.name}" : null)
         }
       ]
-      max_unavailable_fixed = length(v.zones)
-      max_surge_fixed       = length(v.zones)
+      update_max_unavailable_fixed = length(v.zones)
+      update_max_surge_fixed       = length(v.zones)
       key                   = "${v.project_id}:${v.region}:${v.name}"
     }) if v.create
   ]
@@ -71,12 +71,12 @@ resource "google_compute_region_instance_group_manager" "default" {
   }
   update_policy {
     type                           = each.value.update_type
-    instance_redistribution_type   = each.value.instance_redistribution_type
+    instance_redistribution_type   = each.value.update_instance_redistribution_type
     minimal_action                 = each.value.update_minimal_action
     most_disruptive_allowed_action = each.value.update_most_disruptive_action
     replacement_method             = each.value.update_replacement_method
-    max_unavailable_fixed          = each.value.max_unavailable_fixed
-    max_surge_fixed                = each.value.max_surge_fixed
+    max_unavailable_fixed          = each.value.update_max_unavailable_fixed
+    max_surge_fixed                = each.value.update_max_surge_fixed
   }
   lifecycle {
     create_before_destroy = true
