@@ -45,7 +45,9 @@ resource "google_compute_address" "default" {
   network_tier  = each.value.network_tier
   purpose       = each.value.purpose
   prefix_length = each.value.prefix_length
-}locals {
+}
+
+locals {
   _forwarding_rules = [for i, v in var.forwarding_rules :
     {
       create      = coalesce(v.create, true)
