@@ -160,7 +160,7 @@ locals {
   subnet_prefix         = "projects/${var.project_id}/regions/${var.region}/subnetworks"
   network_names         = coalesce(var.network_names, [var.network_name])
   subnet_names          = coalesce(var.subnet_names, [var.subnet_name])
-  description = coalesce(v.description, lookup(local.descriptions, v.install_type, "Check Point Security Gateway"))
+  description           = coalesce(v.description, lookup(local.descriptions, v.install_type, "Check Point Security Gateway"))
 }
 
 # Create Compute Engine Instances
@@ -264,7 +264,7 @@ resource "google_compute_instance" "default" {
 
 # Unmanaged Instance Group for each gateway
 resource "google_compute_instance_group" "default" {
-  for_each = { for i, v in local.checkpoint_instances : v.key => v if v.create_instance_groups == true }
+  for_each    = { for i, v in local.checkpoint_instances : v.key => v if v.create_instance_groups == true }
   project     = each.value.project_id
   name        = each.value.name
   description = "Unmanaged Instance Group for ${each.value.name}"
