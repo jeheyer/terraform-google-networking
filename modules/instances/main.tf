@@ -15,7 +15,7 @@ locals {
 # Get a list of available zones for each region
 locals {
   regions = toset(flatten(concat(
-    [for i, v in local.___instances : v.region],
+    [for i, v in local._instances : v.region if v.zone == null],
     [for i, v in local._migs : v.region]
   )))
 }
