@@ -72,7 +72,7 @@ locals {
       shared_secret = coalesce(
         v.ike_psk,
         var.defaults.vpn_ike_psk,
-        lookup(resource.random_string.ike_psks, v.index_key, "error").result,
+        resource.random_string.ike_psks[v.index_key].result,
         "abcdefghij0123456789"
       )
       peer_external_gateway_interface = v.peer_is_gcp ? null : v.peer_external_gateway_interface
