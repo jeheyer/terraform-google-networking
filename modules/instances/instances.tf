@@ -18,6 +18,7 @@ locals {
       delete_protection         = coalesce(v.delete_protection, false)
       allow_stopping_for_update = coalesce(v.allow_stopping_for_update, true)
       create_umig               = coalesce(v.create_umig, false)
+      nat_ip_names              = coalesce(v.nat_ip_names, [])
     })
   ]
   __instances = [
