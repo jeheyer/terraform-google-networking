@@ -1,5 +1,6 @@
 locals {
-  _instances = [for i, v in var.instances :
+  _instances = [
+    for i, v in var.instances :
     merge(v, {
       create                    = coalesce(v.create, true)
       project_id                = coalesce(v.project_id, var.project_id)
@@ -19,19 +20,44 @@ locals {
       create_umig               = coalesce(v.create_umig, false)
     })
   ]
-  __instances = [for i, v in local._instances :
+  __instances = [
+    for i, v in local._instances :
     merge(v, {
       image     = coalesce(v.image, "${v.os_project}/${v.os}")
       zone      = coalesce(v.zone, "${v.region}-${element(local.zones, i)}")
       subnet_id = "projects/${v.network_project_id}/regions/${v.region}/subnetworks/${v.subnet_name}"
     }) if v.create
   ]
-  ___instances = [for i, v in local.__instances :
+  ___instances = [
+    for i, v in local.__instances :
     merge(v, {
       region = coalesce(v.region, trimsuffix(v.zone, substr(v-zone, -2, 2)))
     }) if v.create
   ]
-  instances = [for i, v in local.___instances :
+}
+
+# Lookup any NAT IP Names to get the IP Address
+locals {
+  address_names = flatten([for i, v in ___local.instances :
+    [for nat_ip_name in v.nat_ip_names :
+      {
+        project_id  = v.project_id
+        region      = v.region
+        name        = v.nat_ip_name
+        v.index_key = "${v.project_id}/${v.region}/${v.nat_ip_name}"
+      } if length(v.nat_ip_names) > 0
+    ]
+  ])
+}
+data "google_compute_addresses" "address_names" {
+  for_each = { for i, v in local.instances : v.index_key => v }
+  project  = each.value.project_id
+  region   = each.value.region
+  filter   = "name:${each.value.name}"
+}
+
+locals {
+  ____instances = [for i, v in local.___instances :
     merge(v, {
       nat_ips = [for i, v in v.nat_ip_names :
         {
@@ -39,8 +65,12 @@ locals {
           address = data.google_compute_addresses.address_names["${v.project_id}/${v.region}/${v.nat_ip_name}"].address
         }
       ]
+    })
+  ]
+  instances = [for i, v in local.____instances :
+    merge(v, {
       index_key = "${v.project_id}/${v.zone}/${v.name}"
-    }) if v.create
+    }) if v.create == true
   ]
 }
 
