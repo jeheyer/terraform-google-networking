@@ -66,12 +66,8 @@ locals {
   gcp_gateway_prefix = "https://www.googleapis.com/compute/v1/projects"
   vpn_tunnels = [for i, v in local.___vpn_tunnels :
     merge(v, {
-      vpn_tunnel = v.name
-      vpn_gateway = coalesce(
-        v.cloud_vpn_gateway,
-        try(local.cloud_vpn_gateways[v.cloud_vpn_gateway].name, null),
-        "error"
-      )
+      vpn_tunnel       = v.name
+      vpn_gateway      = coalesce(v.cloud_vpn_gateway, try(local.cloud_vpn_gateways[v.cloud_vpn_gateway].name, "error"))
       peer_gcp_gateway = v.peer_is_gcp ? "${local.gcp_gateway_prefix}/${v.peer_gcp_vpn_gateway_project_id}/regions/${v.region}/vpnGateways/${v.peer_gcp_vpn_gateway}" : null
       shared_secret = coalesce(
         v.ike_psk,
