@@ -127,7 +127,7 @@ resource "google_compute_instance" "default" {
       dynamic "access_config" {
         for_each = each.value.nat_ips
         content {
-          nat_ip = each.value.address
+          nat_ip = each.value.nat_ips[each.key].address
         }
       }
     }
