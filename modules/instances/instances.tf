@@ -39,11 +39,12 @@ locals {
   instance_nat_ips = flatten([for i, v in local.___instances :
     [for nat_ip_name in v.nat_ip_names :
       {
-        project_id = v.project_id
-        region     = v.region
-        name       = nat_ip_name
-        address    = null
-        index_key  = "${v.project_id}/${v.region}/${nat_ip_name}"
+        project_id  = v.project_id
+        region      = v.region
+        name        = nat_ip_name
+        description = null
+        address     = null
+        index_key   = "${v.project_id}/${v.region}/${nat_ip_name}"
       } if length(v.nat_ip_names) > 0
     ]
   ])
@@ -53,6 +54,7 @@ resource "google_compute_address" "instance_nat_ips" {
   for_each      = { for i, v in local.instance_nat_ips : v.index_key => v }
   project       = each.value.project_id
   name          = each.value.name
+  description   = each.value.description
   region        = each.value.region
   purpose       = null
   address_type  = "EXTERNAL"
