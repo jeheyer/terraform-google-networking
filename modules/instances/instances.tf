@@ -25,15 +25,15 @@ locals {
   __instances = [
     for i, v in local._instances :
     merge(v, {
-      image     = coalesce(v.image, "${v.os_project}/${v.os}")
-      subnet_id = "projects/${v.network_project_id}/regions/${v.region}/subnetworks/${v.subnet_name}"
-      zone      = coalesce(v.zone, v.region != null ? "${v.region}-${element(local.zones, i)}" : "${local.region}-a")
+      image  = coalesce(v.image, "${v.os_project}/${v.os}")
+      region = coalesce(v.region, v.zone != null ? trimsuffix(v.zone, substr(v.zone, -2, 2)) : local.region)
     }) if v.create
   ]
   ___instances = [
     for i, v in local.__instances :
     merge(v, {
-      region = coalesce(v.region, trimsuffix(v.zone, substr(v.zone, -2, 2)))
+      zone      = coalesce(v.zone, "${v.region}-${element(local.zones, i)}")
+      subnet_id = "projects/${v.network_project_id}/regions/${v.region}/subnetworks/${v.subnet_name}"
     })
   ]
   instance_nat_ips = flatten([for i, v in local.___instances :
