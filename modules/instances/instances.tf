@@ -6,6 +6,7 @@ locals {
       project_id                = coalesce(v.project_id, var.project_id)
       network_project_id        = coalesce(v.network_project_id, var.network_project_id, v.project_id, var.project_id)
       name                      = lower(trimspace(coalesce(v.name, "instance-${i + 1}")))
+      region                    = try(coalesce(v.region, v.zone == null ? local.region : null), null)
       network                   = coalesce(v.network_name, "default")
       subnet_name               = coalesce(v.subnet_name, "default")
       os_project                = coalesce(v.os_project, local.os_project)
@@ -25,15 +26,15 @@ locals {
     for i, v in local._instances :
     merge(v, {
       image     = coalesce(v.image, "${v.os_project}/${v.os}")
-      zone      = coalesce(v.zone, "${v.region}-${element(local.zones, i)}")
       subnet_id = "projects/${v.network_project_id}/regions/${v.region}/subnetworks/${v.subnet_name}"
+      zone      = coalesce(v.zone, "${v.region}-${element(local.zones, i)}")
     }) if v.create
   ]
   ___instances = [
     for i, v in local.__instances :
     merge(v, {
       region = coalesce(v.region, trimsuffix(v.zone, substr(v.zone, -2, 2)))
-    }) if v.create
+    })
   ]
   instance_nat_ips = flatten([for i, v in local.___instances :
     [for nat_ip_name in v.nat_ip_names :
