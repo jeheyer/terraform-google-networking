@@ -32,7 +32,7 @@ locals {
   ___instances = [
     for i, v in local.__instances :
     merge(v, {
-      region = coalesce(v.region, trimsuffix(v.zone, substr(v-zone, -2, 2)))
+      region = coalesce(v.region, trimsuffix(v.zone, substr(v.zone, -2, 2)))
     }) if v.create
   ]
   instance_nat_ips = flatten([for i, v in local.___instances :
@@ -48,7 +48,7 @@ locals {
   ])
 }
 
-resource "google_compute_address" "default" {
+resource "google_compute_address" "instance_nat_ips" {
   for_each      = { for i, v in local.instance_nat_ips : v.index_key => v }
   project       = each.value.project_id
   name          = each.value.name
@@ -89,7 +89,7 @@ locals {
       nat_ips = [for i, v in v.nat_ip_names :
         {
           name    = v.nat_ip_name
-          address = data.google_compute_addresses.address_names["${v.project_id}/${v.region}/${v.nat_ip_name}"].address
+          address = google_compute_address.instance_nat_ips["${v.project_id}/${v.region}/${v.nat_ip_name}"].address
         }
       ]
     })
