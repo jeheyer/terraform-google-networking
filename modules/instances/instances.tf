@@ -35,7 +35,7 @@ locals {
       region = coalesce(v.region, trimsuffix(v.zone, substr(v-zone, -2, 2)))
     }) if v.create
   ]
-  instance_nat_ips = flatten([for i, v in ___local.instances :
+  instance_nat_ips = flatten([for i, v in local.___instances :
     [for nat_ip_name in v.nat_ip_names :
       {
         project_id  = v.project_id

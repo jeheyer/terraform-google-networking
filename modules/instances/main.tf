@@ -1,6 +1,6 @@
 
 locals {
-  region                 = "us-central1"
+  region                 = "us-central1" # only if neither region nor zone were specified
   machine_type           = "e2-micro"
   os_project             = "debian-cloud"
   os                     = "debian-11"
