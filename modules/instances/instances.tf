@@ -41,7 +41,7 @@ locals {
       {
         project_id  = v.project_id
         region      = v.region
-        name        = v.nat_ip_name
+        name        = nat_ip_name
         address     = null
         v.index_key = "${v.project_id}/${v.region}/${v.nat_ip_name}"
       } if length(v.nat_ip_names) > 0
