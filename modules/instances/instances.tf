@@ -90,7 +90,6 @@ locals {
     merge(v, {
       nat_ips = [for i, v in v.nat_ip_names :
         {
-          name    = v.nat_ip_name
           address = google_compute_address.instance_nat_ips["${v.project_id}/${v.region}/${v.nat_ip_name}"].address
         }
       ]
