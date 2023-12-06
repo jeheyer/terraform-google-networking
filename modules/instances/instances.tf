@@ -47,7 +47,7 @@ locals {
       ])
     })
   ]
-  #instance_nat_ips   = flatten([for i, v in local.___instances.nat_ips ]
+  instance_nat_ips = flatten([for i, v in local.___instances : [for nat_ip in v.nat_ips : nat_ip]])
 }
 
 resource "google_compute_address" "instance_nat_ips" {
