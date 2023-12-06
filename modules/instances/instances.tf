@@ -51,7 +51,7 @@ locals {
 }
 
 resource "google_compute_address" "instance_nat_ips" {
-  for_each      = { for i, v in local.___instances.nat_ips : v.index_key => v }
+  for_each      = { for i, v in local.instance_nat_ips : v.index_key => v }
   project       = each.value.project_id
   name          = each.value.name
   description   = each.value.description
