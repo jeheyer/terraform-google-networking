@@ -40,8 +40,8 @@ variable "instances" {
     can_ip_forward            = optional(bool)
     delete_protection         = optional(bool)
     allow_stopping_for_update = optional(bool)
-    nat_ip_addresses          = optional(list(string))
-    nat_ip_names              = optional(list(string))
+    nat_ip_addresses          = optional(string)
+    nat_ip_names              = optional(string)
     ssh_key                   = optional(string)
     create_umig               = optional(bool)
     public_zone               = optional(string)
@@ -80,6 +80,7 @@ variable "instance_templates" {
     metadata               = optional(map(string))
     ssh_key                = optional(string)
     can_ip_forward         = optional(bool)
+    nat_ips                = optional(list(string))
   }))
   default = []
 }

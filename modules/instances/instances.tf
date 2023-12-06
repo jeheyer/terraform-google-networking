@@ -12,7 +12,7 @@ locals {
       machine_type              = coalesce(v.machine_type, local.machine_type)
       can_ip_forward            = coalesce(v.can_ip_forward, false)
       service_account_scopes    = coalesce(v.service_account_scopes, local.service_account_scopes)
-      region                    = coalesce(v.region, var.region, local.region)
+      region                    = try(coalesce(v.region, var.region, v.zone == null ? local.region : null), null)
       labels                    = { for k, v in coalesce(v.labels, {}) : k => lower(replace(v, " ", "_")) }
       delete_protection         = coalesce(v.delete_protection, false)
       allow_stopping_for_update = coalesce(v.allow_stopping_for_update, true)
@@ -26,8 +26,19 @@ locals {
       subnet_id = "projects/${v.network_project_id}/regions/${v.region}/subnetworks/${v.subnet_name}"
     }) if v.create
   ]
-  instances = [for i, v in local.__instances :
+  ___instances = [for i, v in local.__instances :
     merge(v, {
+      region = coalesce(v.region, trimsuffix(v.zone, substr(v-zone, -2, 2)))
+    }) if v.create
+  ]
+  instances = [for i, v in local.___instances :
+    merge(v, {
+      nat_ips = [for i, v in v.nat_ip_names :
+        {
+          name    = v.nat_ip_name
+          address = data.google_compute_addresses.address_names["${v.project_id}/${v.region}/${v.nat_ip_name}"].address
+        }
+      ]
       index_key = "${v.project_id}/${v.zone}/${v.name}"
     }) if v.create
   ]
@@ -55,14 +66,12 @@ resource "google_compute_instance" "default" {
       network            = each.value.network
       subnetwork_project = each.value.network_project_id
       subnetwork         = each.value.subnet_name
-      /* TODO
       dynamic "access_config" {
-        for_each = var.nat_interfaces[network_interface.key] == true && length(var.nat_ips) > 0 ? [var.nat_ips[count.index]] : []
+        for_each = each.value.nat_ips
         content {
-          nat_ip = var.nat_ips[count.index]
+          nat_ip = access_config.address
         }
       }
-      */
     }
   }
   labels = {
