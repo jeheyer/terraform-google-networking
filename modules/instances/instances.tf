@@ -27,7 +27,7 @@ locals {
     merge(v, {
       image     = coalesce(v.image, "${v.os_project}/${v.os}")
       subnet_id = "projects/${v.network_project_id}/regions/${v.region}/subnetworks/${v.subnet_name}"
-      zone      = coalesce(v.zone, "${v.region}-${element(local.zones, i)}")
+      zone      = coalesce(v.zone, v.region != null ? "${v.region}-${element(local.zones, i)}" : "${local.region}-a")
     }) if v.create
   ]
   ___instances = [
