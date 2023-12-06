@@ -34,7 +34,7 @@ locals {
     merge(v, {
       zone      = coalesce(v.zone, "${v.region}-${element(local.zones, i)}")
       subnet_id = "projects/${v.network_project_id}/regions/${v.region}/subnetworks/${v.subnet_name}"
-      nat_ips = flatten([[for nat_ip_name in v.nat_ip_names :
+      nat_ips = flatten([for nat_ip_name in v.nat_ip_names :
         {
           project_id  = v.project_id
           region      = v.region
@@ -43,7 +43,6 @@ locals {
           address     = null
           index_key   = "${v.project_id}/${v.region}/${nat_ip_name}"
         } if length(v.nat_ip_names) > 0
-        ]
       ])
     })
   ]
@@ -133,7 +132,8 @@ resource "google_compute_instance" "default" {
     }
   }
   labels = {
-    os           = each.value.os
+    #os           = coalesce(each.value.os, strcontains(each.value.image, "/") ? split("/", each.value.image)[-1] : "")
+    os           = coalesce(each.value.os, split("/", each.value.image)[-1])
     image        = each.value.image != null ? substr(replace(each.value.image, "/", "-"), 0, 63) : null
     machine_type = each.value.machine_type
   }
