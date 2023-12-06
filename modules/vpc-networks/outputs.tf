@@ -22,13 +22,13 @@ output "vpc_networks" {
       ]
       cloud_routers = [for cloud_router in local.cloud_routers :
         {
-          name = cloud_router.name
+          name   = cloud_router.name
           region = cloud_router.region
         }
       ]
       cloud_nats = [for cloud_nat in local.cloud_nats :
         {
-          name = cloud_nat.name
+          name   = cloud_nat.name
           region = cloud_nat.region
           router = cloud_nat.router
         }
