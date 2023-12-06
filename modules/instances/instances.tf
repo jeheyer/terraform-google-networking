@@ -43,7 +43,7 @@ locals {
         region      = v.region
         name        = nat_ip_name
         address     = null
-        v.index_key = "${v.project_id}/${v.region}/${v.nat_ip_name}"
+        v.index_key = "${v.project_id}/${v.region}/${nat_ip_name}"
       } if length(v.nat_ip_names) > 0
     ]
   ])
