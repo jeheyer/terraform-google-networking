@@ -34,24 +34,24 @@ locals {
     merge(v, {
       zone      = coalesce(v.zone, "${v.region}-${element(local.zones, i)}")
       subnet_id = "projects/${v.network_project_id}/regions/${v.region}/subnetworks/${v.subnet_name}"
+      nat_ips = flatten([[for nat_ip_name in v.nat_ip_names :
+        {
+          project_id  = v.project_id
+          region      = v.region
+          name        = nat_ip_name
+          description = null
+          address     = null
+          index_key   = "${v.project_id}/${v.region}/${nat_ip_name}"
+        } if length(v.nat_ip_names) > 0
+        ]
+      ])
     })
   ]
-  instance_nat_ips = flatten([for i, v in local.___instances :
-    [for nat_ip_name in v.nat_ip_names :
-      {
-        project_id  = v.project_id
-        region      = v.region
-        name        = nat_ip_name
-        description = null
-        address     = null
-        index_key   = "${v.project_id}/${v.region}/${nat_ip_name}"
-      } if length(v.nat_ip_names) > 0
-    ]
-  ])
+  #instance_nat_ips   = flatten([for i, v in local.___instances.nat_ips ]
 }
 
 resource "google_compute_address" "instance_nat_ips" {
-  for_each      = { for i, v in local.instance_nat_ips : v.index_key => v }
+  for_each      = { for i, v in local.___instances.nat_ips : v.index_key => v }
   project       = each.value.project_id
   name          = each.value.name
   description   = each.value.description
@@ -88,9 +88,9 @@ data "google_compute_addresses" "address_names" {
 locals {
   ____instances = [for i, v in local.___instances :
     merge(v, {
-      nat_ips = [for i, v in v.nat_ip_names :
+      nat_ips = [for nat_ip in v.nat_ips :
         {
-          address = google_compute_address.instance_nat_ips["${v.project_id}/${v.region}/${v.nat_ip_name}"].address
+          address = google_compute_address.instance_nat_ips[nat_ip.index.key].address
         }
       ]
     })
