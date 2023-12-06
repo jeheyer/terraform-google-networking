@@ -133,7 +133,7 @@ resource "google_compute_instance" "default" {
   }
   labels = {
     #os           = coalesce(each.value.os, strcontains(each.value.image, "/") ? split("/", each.value.image)[-1] : "")
-    os           = coalesce(each.value.os, split("/", each.value.image)[-1])
+    os           = coalesce(each.value.os, split("/", each.value.image)[1])
     image        = each.value.image != null ? substr(replace(each.value.image, "/", "-"), 0, 63) : null
     machine_type = each.value.machine_type
   }
