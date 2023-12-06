@@ -25,7 +25,7 @@ locals {
   __instances = [
     for i, v in local._instances :
     merge(v, {
-      image  = coalesce(v.image, "${v.os_project}/${v.os}")
+      image  = try(coalesce(v.image, v.os_project != null && v.os != null ? "${v.os_project}/${v.os}" : null), null)
       region = coalesce(v.region, v.zone != null ? trimsuffix(v.zone, substr(v.zone, -2, 2)) : local.region)
     }) if v.create
   ]
