@@ -35,9 +35,34 @@ locals {
       region = coalesce(v.region, trimsuffix(v.zone, substr(v-zone, -2, 2)))
     }) if v.create
   ]
+  instance_nat_ips = flatten([for i, v in ___local.instances :
+    [for nat_ip_name in v.nat_ip_names :
+      {
+        project_id  = v.project_id
+        region      = v.region
+        name        = v.nat_ip_name
+        address     = null
+        v.index_key = "${v.project_id}/${v.region}/${v.nat_ip_name}"
+      } if length(v.nat_ip_names) > 0
+    ]
+  ])
 }
 
-# Lookup any NAT IP Names to get the IP Address
+resource "google_compute_address" "default" {
+  for_each      = { for i, v in local.instance_nat_ips : v.index_key => v }
+  project       = each.value.project_id
+  name          = each.value.name
+  description   = each.value.description
+  region        = each.value.region
+  purpose       = null
+  address_type  = "EXTERNAL"
+  network_tier  = "PREMIUM"
+  prefix_length = 0
+  address       = each.value.address
+}
+
+
+/* Lookup any NAT IP Names to get the IP Address
 locals {
   address_names = flatten([for i, v in ___local.instances :
     [for nat_ip_name in v.nat_ip_names :
@@ -56,6 +81,7 @@ data "google_compute_addresses" "address_names" {
   region   = each.value.region
   filter   = "name:${each.value.name}"
 }
+*/
 
 locals {
   ____instances = [for i, v in local.___instances :
