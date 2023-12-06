@@ -71,8 +71,8 @@ locals {
       peer_gcp_gateway = v.peer_is_gcp ? "${local.gcp_gateway_prefix}/${v.peer_gcp_vpn_gateway_project_id}/regions/${v.region}/vpnGateways/${v.peer_gcp_vpn_gateway}" : null
       shared_secret = coalesce(
         v.ike_psk,
-        var.defaults.vpn_ike_psk,
-        resource.random_string.ike_psks[v.index_key].result,
+        #var.defaults.vpn_ike_psk,
+        try(resource.random_string.ike_psks[v.index_key].result, null),
         "abcdefghij0123456789"
       )
       peer_external_gateway_interface = v.peer_is_gcp ? null : v.peer_external_gateway_interface
