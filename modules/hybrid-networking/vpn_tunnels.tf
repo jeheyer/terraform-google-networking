@@ -22,7 +22,7 @@ locals {
           advertised_ip_ranges            = coalesce(tunnel.advertised_ip_ranges, vpn.advertised_ip_ranges, [])
           advertised_groups               = coalesce(tunnel.advertised_groups, vpn.advertised_groups, [])
           advertised_priority             = coalesce(tunnel.advertised_priority, vpn.advertised_priority, 100)
-          peer_name                       = tunnel.peer_bgp_name
+          peer_bgp_name                   = tunnel.peer_bgp_name
           peer_ip_address                 = tunnel.peer_bgp_ip
           peer_asn                        = try(coalesce(tunnel.peer_bgp_asn, vpn.peer_bgp_asn), null)
           enable                          = coalesce(tunnel.enable, true)
@@ -49,7 +49,7 @@ locals {
   ___vpn_tunnels = [for i, v in local.__vpn_tunnels :
     merge(v, {
       interface_name        = coalesce(v.interface_name, "${v.name}")
-      peer_bgp_name        = coalesce(v.peer_bgp_name, "${v.name}-${v.tunnel_index}")
+      peer_bgp_name         = coalesce(v.peer_bgp_name, "${v.name}-${v.tunnel_index}")
       index_key             = "${v.project_id}/${v.region}/${v.name}"
       cloud_vpn_gateway_key = "${v.project_id}/${v.region}/${v.cloud_vpn_gateway}"
     })
