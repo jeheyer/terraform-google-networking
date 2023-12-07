@@ -1,11 +1,10 @@
 
 locals {
   region                 = "us-central1" # only if neither region nor zone were specified
-  machine_type           = "e2-micro"
-  os_project             = "debian-cloud"
-  os                     = "debian-11"
+  machine_type           = "e2-micro"    # because it's the cheapest
+  os_project             = "debian-cloud/"
+  os                     = "debian-11" # GCP default as of 2023
   service_account_scopes = ["compute-rw", "storage-rw", "logging-write", "monitoring"]
-  zones                  = ["b", "c"]
   metadata = {
     enable-osconfig         = "true"
     enable-guest-attributes = "true"

@@ -32,7 +32,12 @@ locals {
   ___instances = [
     for i, v in local.__instances :
     merge(v, {
-      zone      = coalesce(v.zone, "${v.region}-${element(local.zones, i)}")
+      #zone      = coalesce(v.zone, "${v.region}-${element(local.zones, i)}")
+      zone = coalesce(
+        v.zone,
+        try(data.google_compute_zones.available[v.index_key].names, null),
+        "${v.region}-${element(["b", "c"], i)}"
+      )
       subnet_id = "projects/${v.network_project_id}/regions/${v.region}/subnetworks/${v.subnet_name}"
       nat_ips = flatten([for nat_ip_name in v.nat_ip_names :
         {
@@ -96,7 +101,7 @@ locals {
   ]
   instances = [for i, v in local.____instances :
     merge(v, {
-      subnet_id = "projects/${v.network_project_id}/regions/${v.region}/subnetworks/${v.subnet_name}"
+      #subnet_id = "projects/${v.network_project_id}/regions/${v.region}/subnetworks/${v.subnet_name}"
       index_key = "${v.project_id}/${v.zone}/${v.name}"
     }) if v.create == true
   ]
