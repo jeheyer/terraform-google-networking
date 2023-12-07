@@ -5,7 +5,6 @@ locals {
       create                    = coalesce(v.create, true)
       project_id                = coalesce(v.project_id, var.project_id)
       network_project_id        = coalesce(v.network_project_id, var.network_project_id, v.project_id, var.project_id)
-      name                      = lower(trimspace(coalesce(v.name, "instance-${i + 1}")))
       region                    = try(coalesce(v.region, v.zone == null ? local.region : null), null)
       network                   = coalesce(v.network_name, "default")
       subnet_name               = coalesce(v.subnet_name, "default")
@@ -25,6 +24,7 @@ locals {
   __instances = [
     for i, v in local._instances :
     merge(v, {
+      name   = lower(trimspace(coalesce(v.name, "${v.name_prefix}-${try(local.region_codes[v.region], "unknown")}")))
       image  = try(coalesce(v.image, v.os_project != null && v.os != null ? "${v.os_project}/${v.os}" : null), null)
       region = coalesce(v.region, v.zone != null ? trimsuffix(v.zone, substr(v.zone, -2, 2)) : local.region)
     }) if v.create
