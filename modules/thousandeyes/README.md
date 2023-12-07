@@ -2,9 +2,9 @@
 
 ---
 
-# Resources
+# Child Modules
 
-- [google_compute_instance](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance)
+- [instances](modules/instances/)
 
 ---
 
@@ -25,13 +25,13 @@
 
 Attributes for the `deployments` list of objects is described below
 
-| Name         | Description                       | Type        | Default  |
-|--------------|-----------------------------------|-------------|----------|
-| name         | Explicit name for the VM          | `string`    | n/a      |
-| machine_type | Machine Type for this specific VM | `string`    | n/a      |
-| region       | GCP Region for the VM             | `string`    | n/a      |
-| zone         | GCP Zone for the VM               | `string`    | n/a      |
-| subnet_name  | Name of the Subnetwork            | `string`    | "default" |
+| Name         | Description                        | Type        | Default  |
+|--------------|------------------------------------|-------------|----------|
+| name         | Explicit name for this VM          | `string`    | n/a      |
+| machine_type | Machine Type for this VM           | `string`    | n/a      |
+| region       | GCP Region for this VM              | `string`    | n/a      |
+| zone         | GCP Zone for this VM               | `string`    | n/a      |
+| subnet_name  | Name of the Subnetwork for this VM | `string`    | "default" |
 
 ## Notes:
 
