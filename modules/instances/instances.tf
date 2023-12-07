@@ -96,6 +96,7 @@ locals {
   ]
   instances = [for i, v in local.____instances :
     merge(v, {
+      subnet_id = "projects/${v.network_project_id}/regions/${v.region}/subnetworks/${v.subnet_name}"
       index_key = "${v.project_id}/${v.zone}/${v.name}"
     }) if v.create == true
   ]
