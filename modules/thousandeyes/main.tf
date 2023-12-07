@@ -7,7 +7,7 @@ locals {
       region             = v.region
       zone               = v.zone
       network_name       = var.network_name
-      network_project_id = var.network_project_id
+      network_project_id = var.host_project_id
       subnet_name        = v.subnet_name
       image              = var.image
       network_tags       = var.network_tags

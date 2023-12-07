@@ -3,9 +3,9 @@ variable "project_id" {
 }
 variable "name_prefix" {
   type    = string
-  default = "thousandeyes"
+  default = null
 }
-variable "network_project_id" {
+variable "host_project_id" {
   type    = string
   default = null
 }
@@ -15,15 +15,15 @@ variable "network_name" {
 }
 variable "machine_type" {
   type    = string
-  default = "e2-small"
+  default = "e2-micro"
 }
 variable "image" {
   type    = string
-  default = "ubuntu-os-cloud/ubuntu-2004-lts"
+  default = "debian-cloud/debian-11"
 }
 variable "network_tags" {
   type    = list(string)
-  default = ["thousandeyes"]
+  default = []
 }
 variable "account_group_token" {
   type = string
