@@ -21,6 +21,7 @@ variable "instances" {
     project_id                = optional(string)
     network_project_id        = optional(string)
     name                      = optional(string)
+    name_prefix               = optional(string)
     description               = optional(string)
     region                    = string
     zone                      = optional(string)

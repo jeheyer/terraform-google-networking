@@ -5,6 +5,7 @@ locals {
       create                    = coalesce(v.create, true)
       project_id                = coalesce(v.project_id, var.project_id)
       network_project_id        = coalesce(v.network_project_id, var.network_project_id, v.project_id, var.project_id)
+      name_prefix               = coalesce(v.name_prefix, "instance-${i}")
       region                    = try(coalesce(v.region, v.zone == null ? local.region : null), null)
       network                   = coalesce(v.network_name, "default")
       subnet_name               = coalesce(v.subnet_name, "default")
@@ -105,6 +106,13 @@ locals {
       index_key = "${v.project_id}/${v.zone}/${v.name}"
     }) if v.create == true
   ]
+}
+
+resource "random_string" "instance_names" {
+  for_each = { for i, v in local.instances : v.index_key => true if v.name == null && v.name_prefix == null }
+  length   = 5
+  special  = false
+  upper    = false
 }
 
 resource "google_compute_instance" "default" {
