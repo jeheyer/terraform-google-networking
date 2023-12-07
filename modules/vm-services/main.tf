@@ -6,13 +6,13 @@ locals {
       name_prefix        = var.name_prefix
       region             = v.region
       zone               = v.zone
-      network_name       = var.network_name
-      network_project_id = var.host_project_id
-      subnet_name        = v.subnet_name
-      image              = var.image
-      network_tags       = var.network_tags
+      network_name       = coalesce(var.network, var.network)
+      network_project_id = try(coalesce(v.host_project_id, var.host_project_id), null)
+      subnet_name        = v.subnet
       machine_type       = coalesce(v.machine_type, var.machine_type)
-      startup_script     = "cd tmp; curl -Os https://downloads.thousandeyes.com/agent/install_thousandeyes.sh > install_thousandeyes.sh ; bash ./install_thousandeyes.sh ${var.account_group_token}"
+      image              = coalesce(v.image, var.image)
+      startup_script     = coalesce(v.startup_script, var.startup_script)
+      network_tags       = coalesce(v.network_tags, var.network_tags)
     }
   ]
 }

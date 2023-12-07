@@ -9,7 +9,7 @@ variable "host_project_id" {
   type    = string
   default = null
 }
-variable "network_name" {
+variable "network" {
   type    = string
   default = "default"
 }
@@ -25,16 +25,22 @@ variable "network_tags" {
   type    = list(string)
   default = []
 }
-variable "account_group_token" {
-  type = string
+variable "startup_script" {
+  type    = string
+  default = null
 }
 variable "deployments" {
   type = list(object({
-    name         = optional(string)
-    region       = optional(string)
-    zone         = optional(string)
-    subnet_name  = optional(string)
-    machine_type = optional(string)
+    name            = optional(string)
+    region          = optional(string)
+    zone            = optional(string)
+    network         = optional(string)
+    network_tags    = optional(list(string))
+    subnet          = optional(string)
+    host_project_id = optional(string)
+    machine_type    = optional(string)
+    image           = optional(string)
+    startup_script  = optional(string)
   }))
   default = []
 }
