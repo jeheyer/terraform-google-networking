@@ -24,7 +24,7 @@ locals {
         tcp_trans_idle_timeout = coalesce(v.tcp_transitory_idle_timeout, var.defaults.cloud_nat_tcp_transitory_idle_timeout, 30)
         icmp_idle_timeout      = coalesce(v.icmp_idle_timeout, var.defaults.cloud_nat_icmp_idle_timeout, 30)
         drain_nat_ips          = []
-        ip_ranges_to_nat       = []
+        ip_ranges_to_nat       = null
       })
     ]
   ])
