@@ -4,7 +4,7 @@ locals {
       merge(v, {
         create               = coalesce(v.create, true)
         project_id           = coalesce(v.project_id, vpc_network.project_id, var.project_id)
-        name                 = coalesce(v.name, "subnet-${i}")
+        name                 = lower(trimspace(coalesce(v.name, "subnet-${i}")))
         network              = google_compute_network.default[vpc_network.index_key].name
         purpose              = upper(coalesce(v.purpose, "PRIVATE"))
         region               = coalesce(v.region, var.region)
