@@ -24,6 +24,7 @@ locals {
         tcp_trans_idle_timeout = coalesce(v.tcp_transitory_idle_timeout, var.defaults.cloud_nat_tcp_transitory_idle_timeout, 30)
         icmp_idle_timeout      = coalesce(v.icmp_idle_timeout, var.defaults.cloud_nat_icmp_idle_timeout, 30)
         drain_nat_ips          = []
+        ip_ranges_to_nat       = []
       })
     ]
   ])
@@ -107,8 +108,8 @@ resource "google_compute_router_nat" "default" {
   dynamic "subnetwork" {
     for_each = each.value.subnets
     content {
-      name                    = subnetwork.value
-      source_ip_ranges_to_nat = each.value.ip_ranges_to_nat
+      name = subnetwork.value
+      #source_ip_ranges_to_nat = each.value.ip_ranges_to_nat
     }
   }
   min_ports_per_vm                    = each.value.min_ports_per_vm
