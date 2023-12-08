@@ -104,12 +104,12 @@ resource "google_compute_router_nat" "default" {
   region                             = each.value.region
   nat_ip_allocate_option             = each.value.nat_ip_allocate_option
   nat_ips                            = try([for address in local.cloud_nat_addresses[each.key] : address.name], null)
-  source_subnetwork_ip_ranges_to_nat = null #each.value.source_ip_ranges_to_nat
+  source_subnetwork_ip_ranges_to_nat = each.value.source_ip_ranges_to_nat
   dynamic "subnetwork" {
     for_each = each.value.subnets
     content {
-      name = subnetwork.value
-      #     source_ip_ranges_to_nat = each.value.ip_ranges_to_nat
+      name                    = subnetwork.value
+      source_ip_ranges_to_nat = each.value.source_ip_ranges_to_nat
     }
   }
   min_ports_per_vm                    = each.value.min_ports_per_vm
