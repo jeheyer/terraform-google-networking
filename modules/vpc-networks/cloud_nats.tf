@@ -91,7 +91,7 @@ locals {
       logging                            = v.log_type == "none" ? false : true
       log_filter                         = lookup(local.log_filter, v.log_type, "ERRORS_ONLY")
       source_subnetwork_ip_ranges_to_nat = length(v.subnets) > 0 ? "LIST_OF_SUBNETWORKS" : "ALL_SUBNETWORKS_ALL_IP_RANGES"
-      source_ip_ranges_to_nat            = ["0.0.0.0/0"]
+      source_ip_ranges_to_nat            = ["ALL_IP_RANGES"]
     }) if v.create == true
   ]
 }
