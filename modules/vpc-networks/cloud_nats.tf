@@ -4,27 +4,27 @@ locals {
   _cloud_nats = flatten([for vpc_network in local.vpc_networks :
     [for i, v in coalesce(vpc_network.cloud_nats, []) :
       merge(v, {
-        create                 = coalesce(v.create, true)
-        project_id             = coalesce(v.project_id, vpc_network.project_id, var.project_id)
-        name                   = coalesce(v.name, "cloud-nat-${i}")
-        network                = vpc_network.name
-        region                 = coalesce(v.region, var.region)
-        router                 = coalesce(v.cloud_router_name, try(local.cloud_router_names[v.cloud_router], null), v.name)
-        num_static_ips         = coalesce(v.num_static_ips, 0)
-        static_ips             = coalesce(v.static_ips, [])
-        subnets                = coalesce(v.subnets, [])
-        enable_dpa             = coalesce(v.enable_dpa, var.defaults.cloud_nat_enable_dpa, true)
-        enable_eim             = coalesce(v.enable_eim, var.defaults.cloud_nat_enable_eim, false)
-        min_ports_per_vm       = coalesce(v.min_ports_per_vm, var.defaults.cloud_nat_min_ports_per_vm, v.enable_dpa != false ? 32 : 64)
-        max_ports_per_vm       = v.enable_dpa != false ? coalesce(v.max_ports_per_vm, var.defaults.cloud_nat_max_ports_per_vm, 65536) : null
-        log_type               = lower(coalesce(v.log_type, var.defaults.cloud_nat_log_type, "errors"))
-        udp_idle_timeout       = coalesce(v.udp_idle_timeout, var.defaults.cloud_nat_udp_idle_timeout, 30)
-        tcp_est_idle_timeout   = coalesce(v.tcp_established_idle_timeout, var.defaults.cloud_nat_tcp_established_idle_timeout, 1200)
-        tcp_time_wait_timeout  = coalesce(v.tcp_time_wait_timeout, var.defaults.cloud_nat_tcp_time_wait_timeout, 120)
-        tcp_trans_idle_timeout = coalesce(v.tcp_transitory_idle_timeout, var.defaults.cloud_nat_tcp_transitory_idle_timeout, 30)
-        icmp_idle_timeout      = coalesce(v.icmp_idle_timeout, var.defaults.cloud_nat_icmp_idle_timeout, 30)
-        drain_nat_ips          = []
-        ip_ranges_to_nat       = null
+        create                  = coalesce(v.create, true)
+        project_id              = coalesce(v.project_id, vpc_network.project_id, var.project_id)
+        name                    = coalesce(v.name, "cloud-nat-${i}")
+        network                 = vpc_network.name
+        region                  = coalesce(v.region, var.region)
+        router                  = coalesce(v.cloud_router_name, try(local.cloud_router_names[v.cloud_router], null), v.name)
+        num_static_ips          = coalesce(v.num_static_ips, 0)
+        static_ips              = coalesce(v.static_ips, [])
+        subnets                 = coalesce(v.subnets, [])
+        enable_dpa              = coalesce(v.enable_dpa, var.defaults.cloud_nat_enable_dpa, true)
+        enable_eim              = coalesce(v.enable_eim, var.defaults.cloud_nat_enable_eim, false)
+        min_ports_per_vm        = coalesce(v.min_ports_per_vm, var.defaults.cloud_nat_min_ports_per_vm, v.enable_dpa != false ? 32 : 64)
+        max_ports_per_vm        = v.enable_dpa != false ? coalesce(v.max_ports_per_vm, var.defaults.cloud_nat_max_ports_per_vm, 65536) : null
+        log_type                = lower(coalesce(v.log_type, var.defaults.cloud_nat_log_type, "errors"))
+        udp_idle_timeout        = coalesce(v.udp_idle_timeout, var.defaults.cloud_nat_udp_idle_timeout, 30)
+        tcp_est_idle_timeout    = coalesce(v.tcp_established_idle_timeout, var.defaults.cloud_nat_tcp_established_idle_timeout, 1200)
+        tcp_time_wait_timeout   = coalesce(v.tcp_time_wait_timeout, var.defaults.cloud_nat_tcp_time_wait_timeout, 120)
+        tcp_trans_idle_timeout  = coalesce(v.tcp_transitory_idle_timeout, var.defaults.cloud_nat_tcp_transitory_idle_timeout, 30)
+        icmp_idle_timeout       = coalesce(v.icmp_idle_timeout, var.defaults.cloud_nat_icmp_idle_timeout, 30)
+        drain_nat_ips           = []
+        source_ip_ranges_to_nat = []
       })
     ]
   ])
@@ -89,9 +89,9 @@ locals {
   ]
   cloud_nats = [for i, v in local.___cloud_nats :
     merge(v, {
-      logging                 = v.log_type == "none" ? false : true
-      log_filter              = lookup(local.log_filter, v.log_type, "ERRORS_ONLY")
-      source_ip_ranges_to_nat = length(v.subnets) > 0 ? "LIST_OF_SUBNETWORKS" : "ALL_SUBNETWORKS_ALL_IP_RANGES"
+      logging                            = v.log_type == "none" ? false : true
+      log_filter                         = lookup(local.log_filter, v.log_type, "ERRORS_ONLY")
+      source_subnetwork_ip_ranges_to_nat = length(v.subnets) > 0 ? "LIST_OF_SUBNETWORKS" : "ALL_SUBNETWORKS_ALL_IP_RANGES"
     }) if v.create == true
   ]
 }
@@ -104,7 +104,7 @@ resource "google_compute_router_nat" "default" {
   region                             = each.value.region
   nat_ip_allocate_option             = each.value.nat_ip_allocate_option
   nat_ips                            = try([for address in local.cloud_nat_addresses[each.key] : address.name], null)
-  source_subnetwork_ip_ranges_to_nat = each.value.source_ip_ranges_to_nat
+  source_subnetwork_ip_ranges_to_nat = each.value.source_subnetwork_ip_ranges_to_nat
   dynamic "subnetwork" {
     for_each = each.value.subnets
     content {
