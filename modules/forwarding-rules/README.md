@@ -1,34 +1,37 @@
 # Client (consumer) connection to a GCP Service using Private Service Connect 
 
-## Resources
+# Resources
 
 - [google_compute_address](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_address)
+- [google_compute_global_address](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_address)
 - [google_compute_forwarding_rule](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_forwarding_rule)
+- [google_compute_global_forwarding_rule](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_forwarding_rule)
 
-## Inputs
+---
 
-### Required Inputs
+# Inputs
+ 
 
 | Name          | Description                                                  | Type     |
 |---------------|--------------------------------------------------------------|----------|
 | project\_id   | Project ID of the project to create the client connection in | `string` | 
-| network\_name | Name of the VPC network on the client side                   | `string` |
 | target\_id    | ID of Published PSC Service                                  | `string` |
 
-### Optional Inputs
+`var.forwarding_rules` is a list of objects of forwarding rules to be created.  Attributes are described below.
 
-| Name                 | Description                                               | Type     | Default   |
-|----------------------|-----------------------------------------------------------|----------|-----------|
-| create               | Whether or not to create forwarding rule                  | `bool`   | true      |
-| region               | Name of the network this set of firewall rules applies to | `string` | n/a       |
-| subnet\_name         | Name of the subnet to create the IP address on            | `string` | "default" |
-| subnet\_id           | ID of the subnet to create the IP address on              | `string` | n/a       |
-| name                 | Explicit name for the PSC IP address and forwarding rule  | `string` | n/a       |
-| description          | Description for the IP address                            | `string` | n/a       |
+| Name               | Description                                               | Type     | Default   |
+|--------------------|-----------------------------------------------------------|----------|-----------|
+| create             | Whether or not to create forwarding rule                  | `bool`   | true      |
+| network\_name      | Name of the VPC network on the client side                | `string` | "default"  |
+| region             | Name of the network this set of firewall rules applies to | `string` | n/a       |
+| subnet\_name       | Name of the subnet to create the IP address on            | `string` | "default" |
+| subnet\_id         | ID of the subnet to create the IP address on              | `string` | n/a       |
+| name               | Explicit name for the PSC IP address and forwarding rule  | `string` | n/a       |
+| description        | Description for the IP address                            | `string` | n/a       |
 | network\_project\_id | If using Shared VPC, the host project ID for the network  | `string` | n/a       |
-| target\_project\_id  | Project ID of Published PSC Service                       | `string` | n/a       |
-| target\_name         | Name of Published PSC Service                             | `string` | n/a       |
-| target\_region       | Region of Published PSC Service                           | `string` | n/a       |
+| target\_project\_id | Project ID of Published PSC Service                       | `string` | n/a       |
+| target\_name       | Name of Published PSC Service                             | `string` | n/a       |
+| target\_region     | Region of Published PSC Service                           | `string` | n/a       |
 
 #### Notes
 
@@ -41,9 +44,11 @@
 
 ## Outputs
 
+`forwarding_rules` returns a list of forwarding rules managed by this module.  Attributes are described below.
+
 | Name    | Description                           | Type     |
 |---------|---------------------------------------|----------|
-| name    | The Name of the PSC Endpoint          | `string` |
+| name    | The name of the Forwarding Rule       | `string` |
 | address | The IP Address of the Forwarding Rule | `string` |
 
 

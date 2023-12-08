@@ -1,4 +1,4 @@
-# ThousandEyes Enterprise Agent VMs on Google Cloud Platform
+# Deploys a list of VMs on Google Cloud Platform
 
 ---
 
@@ -11,27 +11,28 @@
 # Inputs
  
 
-| Name                | Description                              | Type           | Default                           |
-|---------------------|------------------------------------------|----------------|-----------------------------------|
-| project\_id         | GCP Project ID for the VMs               | `string`       | n/a                               |
-| host_projec\_id     | If using Shared VPC, the Host Project ID | `string`       | null                              |
-| name_prefix         | Naming Prefix for instances              | `string`       | "thousandeyes"                    |
-| network_name        | VPC Network Name                         | `string`       | "default"                         |
-| machine_type        | Machine Type for the VMs                 | `string`       | "e2-small"                        | 
-| network_tags        | Network Tags for the VMs                 | `list(string)` | ["thousandeyes"]                  |
-| image               | Install Image for the VMs                | `string`       | "ubuntu-os-cloud/ubuntu-2004-lts" |
-| account_group_token | Account Token to use                     | `string`       | n/a                               | 
-| deployments         | List of deployments with this configuration | `list(object)` | n/a |
+| Name             | Description                                 | Type           | Default                  |
+|------------------|---------------------------------------------|----------------|--------------------------|
+| project\_id      | GCP Project ID for the VMs                  | `string`       | n/a                      |
+| host_project\_id | If using Shared VPC, the Host Project ID    | `string`       | null                     |
+| name_prefix      | Naming Prefix for instances                 | `string`       | "instance"               |
+| network          | VPC Network Name                            | `string`       | "default"                |
+| machine_type     | Machine Type for the VMs                    | `string`       | "e2-micro"               | 
+| network_tags     | Network Tags for the VMs                    | `list(string)` | []                       |
+| image            | Install Image for the VMs                   | `string`       | "debian-cloud/debian-11" |
+| startup_script   | Startup Script                              | `string`       | n/a                      | 
+| deployments      | List of deployments with this configuration | `list(object)` | n/a                      |
 
 Attributes for the `deployments` list of objects is described below
 
-| Name         | Description                       | Type        | Default  |
-|--------------|-----------------------------------|-------------|----------|
-| name         | Explicit name for the VM          | `string`    | n/a      |
-| machine_type | Machine Type for this specific VM | `string`    | n/a      |
-| region       | GCP Region for the VM             | `string`    | n/a      |
-| zone         | GCP Zone for the VM               | `string`    | n/a      |
-| subnet_name  | Name of the Subnetwork            | `string`    | "default" |
+| Name         | Description                       | Type        | Default    |
+|--------------|-----------------------------------|-------------|------------|
+| name         | Explicit name for the VM          | `string`    | n/a        |
+| machine_type | Machine Type for this specific VM | `string`    | n/a        |
+| region       | GCP Region for the VM             | `string`    | n/a        |
+| zone         | GCP Zone for the VM               | `string`    | n/a        |
+| network      | VPC Network Name                  | `string`    | "default"  |
+| subnet       | Name of the Subnetwork            | `string`    | "default"  |
 
 ## Notes:
 
@@ -43,7 +44,18 @@ Attributes for the `deployments` list of objects is described below
 ##2 Examples
 
 ```
-project_id        = "my-project-id"
-network_name      = "my-network-name"
+project_id  = "my-project-id"
+network     = "my-network-name"
+name_prefix = "test1"
+deployments = [
+  {
+     region = "us-east1"
+     subnet = "default"
+  },
+  {
+     region = "us-west1"
+     subnet = "default"
+  },
+]
 ```
 
