@@ -108,8 +108,8 @@ resource "google_compute_router_nat" "default" {
   dynamic "subnetwork" {
     for_each = each.value.subnets
     content {
-      name = subnetwork.value
-      #source_ip_ranges_to_nat = each.value.ip_ranges_to_nat
+      name                    = subnetwork.value
+      source_ip_ranges_to_nat = each.value.ip_ranges_to_nat
     }
   }
   min_ports_per_vm                    = each.value.min_ports_per_vm
