@@ -1,7 +1,7 @@
 
 output "cloud_vpn_gateways" {
   value = { for i, v in local.cloud_vpn_gateways :
-    index_key => {
+    v.index_key => {
       index_key    = v.index_key
       name         = v.name
       region       = v.region
@@ -12,7 +12,7 @@ output "cloud_vpn_gateways" {
 
 output "peer_vpn_gateways" {
   value = { for i, v in local.peer_vpn_gateways :
-    index_key => {
+    v.index_key => {
       index_key       = v.index_key
       name            = v.name
       redundancy_type = v.redundancy_type
@@ -25,7 +25,7 @@ output "peer_vpn_gateways" {
 
 output "vpn_tunnels" {
   value = { for i, v in local.vpn_tunnels :
-    index_key => {
+    v.index_key => {
       index_key               = v.index_key
       name                    = v.name
       cloud_router_ip_address = v.ip_range
