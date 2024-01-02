@@ -5,6 +5,7 @@
 *.tfplan
 *.tfstate
 *.tfstate.*
+backend.tf
 override.tf
 override.tf.json
 *_override.tf
